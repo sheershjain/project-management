@@ -12,16 +12,16 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, {
-        foreignKey: 'user_id'
+        foreignKey: 'userId'
       });
-      
+
       this.belongsTo(models.Designation, {
-        foreignKey: 'designation_id'
+        foreignKey: 'designationId'
       });
     }
   }
   UserDesignationMapping.init({
-    user_id: {
+    userId: {
       allowNull: false,
       type: Sequelize.UUID,
       references: {
@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
         key: 'id'
       }
     },
-    designation_id: {
+    designationId: {
       type: Sequelize.UUID,
       allowNull: false,
       references: {

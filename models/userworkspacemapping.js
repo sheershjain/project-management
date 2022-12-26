@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, Sequelize) => {
-  class UserRoleMapping extends Model {
+  class UserWorkspaceMapping extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,16 +11,21 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-       this.belongsTo(models.User, {
+       this.belongsTo(models.Workspace, {
+        foreignKey: 'workspaceId'
+       });
+      
+      this.belongsTo(models.User, {
         foreignKey: 'userId'
       });
-      this.belongsTo(models.Role, {
-        foreignKey: 'roleId'
+      
+      this.belongsTo(models.Designation, {
+        foreignKey: 'designationId'
       });
     }
   }
-  UserRoleMapping.init({
-      userId: {
+  UserWorkspaceMapping.init({
+   userId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -28,19 +33,27 @@ module.exports = (sequelize, Sequelize) => {
           key: 'id'
         }
       },
-      roleId: {
-        allowNull: false,
+      designationId: {
         type: Sequelize.UUID,
+        allowNull: false,
         references: {
-          model: "role",
+          model: "designation",
+          key: 'id'
+        }
+      },
+      workspaceId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "workspace",
           key: 'id'
         }
       }
   }, {
     sequelize,
     paranoid: true,
-    tableName: "user_role_mapping",
-    modelName: 'UserRoleMapping',
+    tableName: "user_workspace_mapping",
+    modelName: 'UserWorkspaceMapping',
   });
-  return UserRoleMapping;
+  return UserWorkspaceMapping;
 };

@@ -11,12 +11,8 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-      TaskComment.belongsTo(models.Task, {
-        foreignKey: 'task_id',
-        targetKey: 'id'
-      });
-      TaskComment.belongsTo(models.User, {
-        foreignKey: 'user_id',
+      this.belongsTo(models.Task, {
+        foreignKey: 'taskId',
         targetKey: 'id'
       });
     }
@@ -27,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         isAlpha: true
       },
-      task_id: {
+      taskId: {
       allowNull: false,
       type: Sequelize.UUID,
       references: {
@@ -35,14 +31,6 @@ module.exports = (sequelize, Sequelize) => {
         key: 'id'
       }
       },
-      user_id: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "user",
-        key: 'id'
-      }
-    }
   }, {
     sequelize,
     paranoid: true,

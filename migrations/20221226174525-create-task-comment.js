@@ -22,14 +22,6 @@ module.exports = {
         key: 'id'
       }
       },
-      user_id: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "user",
-        key: 'id'
-      }
-    },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

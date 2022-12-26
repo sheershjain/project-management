@@ -11,6 +11,21 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
+
+      this.hasMany(models.Tag, {
+        foreignKey: 'workspaceId',
+        targetKey: 'id'
+      });
+
+      this.belongsToMany(models.User, {
+        through: models.UserWorkspaceMapping,
+        foreignKey: 'userId',
+      })
+
+      this.belongsToMany(models.Designation, {
+        through: models.UserWorkspaceMapping,
+        foreignKey: 'designationId',
+      })
     }
   }
   Workspace.init({
