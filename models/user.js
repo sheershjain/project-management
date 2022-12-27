@@ -26,10 +26,10 @@ module.exports = (sequelize, Sequelize) => {
         foreignKey: 'userId',
       });
 
-      // this.belongsToMany(models.Sprint, {
-      //   foreignKey: 'userId',
-      //   targetKey: 'id'
-      // });
+      this.belongsToMany(models.Sprint, {
+        foreignKey: 'userId',
+        targetKey: 'id'
+      });
 
        this.hasMany(models.Task, {
         foreignKey: 'userId',
