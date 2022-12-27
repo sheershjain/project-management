@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class UserWorkspaceMapping extends Model {
     /**
@@ -11,52 +9,58 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-       this.belongsTo(models.Workspace, {
-         foreignKey: 'workspace_id',
-         targetKey: 'id'
-       });
-      
-      this.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        targetKey: 'id'
+      this.belongsTo(models.Workspace, {
+        foreignKey: "workspace_id",
+        targetKey: "id",
+        as: "Workspace",
       });
-      
+
+      this.belongsTo(models.User, {
+        foreignKey: "user_id",
+        targetKey: "id",
+        as: "User",
+      });
+
       this.belongsTo(models.Designation, {
-        foreignKey: 'designation_id',
-        targetKey: 'id'
+        foreignKey: "designation_id",
+        targetKey: "id",
+        as: "Designation",
       });
     }
   }
-  UserWorkspaceMapping.init({
-   userId: {
+  UserWorkspaceMapping.init(
+    {
+      userId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
           model: "user",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
       designationId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "designation",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
       workspaceId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "workspace",
-          key: 'id'
-        }
-      }
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "user_workspace_mapping",
-    modelName: 'UserWorkspaceMapping',
-  });
+          key: "id",
+        },
+      },
+    },
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "user_workspace_mapping",
+      modelName: "UserWorkspaceMapping",
+    }
+  );
   return UserWorkspaceMapping;
 };

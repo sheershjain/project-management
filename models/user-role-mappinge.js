@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
-  class Tag extends Model {
+  class UserRolMappinge extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,30 +9,34 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Task, {
-        foreignKey: "task_id",
+      this.belongsTo(models.User, {
+        foreignKey: "user_id",
         targetKey: "id",
-        as: "Task",
+        as: "User",
+      });
+
+      this.belongsTo(models.Role, {
+        foreignKey: "role_id",
+        targetKey: "id",
+        as: "Role",
       });
     }
   }
-  Tag.init(
+  UserRolMappinge.init(
     {
-      tag: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        isAlpha: true,
-      },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        isAlpha: true,
-      },
-      taskId: {
+      userId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "task",
+          model: "user",
+          key: "id",
+        },
+      },
+      roleId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "role",
           key: "id",
         },
       },
@@ -40,9 +44,9 @@ module.exports = (sequelize, Sequelize) => {
     {
       sequelize,
       paranoid: true,
-      tableName: "tag",
-      modelName: "Tag",
+      tableName: "user_role_mapping",
+      modelName: "UserRolMappinge",
     }
   );
-  return Tag;
+  return UserRolMappinge;
 };

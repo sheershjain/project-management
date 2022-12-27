@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class Sprint extends Model {
     /**
@@ -11,45 +9,49 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-       this.hasMany(models.Task, {
-        foreignKey: 'sprint_id',
-         sourceKey: 'id',
-         as: 'Task'
+      this.hasMany(models.Task, {
+        foreignKey: "sprint_id",
+        sourceKey: "id",
+        as: "Task",
       });
-       this.belongsTo(models.Workspace, {
-        foreignKey: 'workspace_id',
-        targetKey: 'id'
+      this.belongsTo(models.Workspace, {
+        foreignKey: "workspace_id",
+        targetKey: "id",
+        as: "Workspace",
       });
     }
   }
-  Sprint.init({
-    name: {
+  Sprint.init(
+    {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       description: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       deadline: {
         type: Sequelize.DATE,
         allowNull: false,
-      }, 
+      },
       workspaceId: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "workspace",
-        key: 'id'
-      }
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "workspace",
+          key: "id",
+        },
+      },
     },
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "sprint",
-    modelName: 'Sprint',
-  });
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "sprint",
+      modelName: "Sprint",
+    }
+  );
   return Sprint;
 };

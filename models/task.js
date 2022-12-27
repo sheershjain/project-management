@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class Task extends Model {
     /**
@@ -12,38 +10,40 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.hasMany(models.TaskComment, {
-        foreignKey: 'task_id',
-        sourceKey: 'id',
-         as: 'TaskComment'
+        foreignKey: "task_id",
+        sourceKey: "id",
+        as: "TaskComment",
       });
-        
-     this.hasMany(models.Tag, {
-        foreignKey: 'task_id',
-        sourceKey: 'id',
-         as: 'Tag'
+
+      this.hasMany(models.Tag, {
+        foreignKey: "task_id",
+        sourceKey: "id",
+        as: "Tag",
       });
 
       this.belongsTo(models.Sprint, {
-        foreignKey: 'sprint_id',
-        targetKey: 'id'
+        foreignKey: "sprint_id",
+        targetKey: "id",
+        as: "Sprint",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        targetKey: 'id'
+        foreignKey: "user_id",
+        targetKey: "id",
       });
     }
   }
-  Task.init({
-    task: {
+  Task.init(
+    {
+      task: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       description: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       pointer: {
         type: Sequelize.INTEGER,
@@ -54,35 +54,37 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       watch: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      allowNull: false
-    },
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+      },
       status: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       sprintId: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "sprint",
-        key: 'id'
-      }
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "sprint",
+          key: "id",
+        },
       },
       userId: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "user",
-        key: 'id'
-      }
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "user",
+          key: "id",
+        },
+      },
+    },
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "task",
+      modelName: "Task",
     }
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "task",
-    modelName: 'Task',
-  });
+  );
   return Task;
 };
