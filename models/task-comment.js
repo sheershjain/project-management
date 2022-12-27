@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, Sequelize) => {
-  class Role extends Model {
+  class TaskComment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,28 +11,31 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-       this.belongsToMany(models.User, {
-        through: models.UserRoleMapping,
-        foreignKey: 'roleId',
-      })
+      this.belongsTo(models.Task, {
+        foreignKey: 'task_id',
+        targetKey: 'id'
+      });
     }
   }
-  Role.init({
-    roleCode: {
+  TaskComment.init({
+    comment: {
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true
       },
-      roleTitle: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        isAlpha: true
+      taskId: {
+      allowNull: false,
+      type: Sequelize.UUID,
+      references: {
+        model: "task",
+        key: 'id'
       }
+      },
   }, {
     sequelize,
     paranoid: true,
-    tableName: "role",
-    modelName: 'Role',
+    tableName: "task_comments",
+    modelName: 'TaskComment',
   });
-  return Role;
+  return TaskComment;
 };

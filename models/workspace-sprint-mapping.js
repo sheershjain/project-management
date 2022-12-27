@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, Sequelize) => {
-  class UserRoleMapping extends Model {
+  class WorkspaceSprintMapping extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,36 +11,39 @@ module.exports = (sequelize, Sequelize) => {
      */
     static associate(models) {
       // define association here
-       this.belongsTo(models.User, {
-        foreignKey: 'userId'
+      this.belongsTo(models.Workspace, {
+        foreignKey: 'workspace_id',
+        targetKey: 'id'
       });
-      this.belongsTo(models.Role, {
-        foreignKey: 'roleId'
+
+      this.belongsTo(models.Sprint, {
+        foreignKey: 'sprint_id',
+        targetKey: 'id'
       });
     }
   }
-  UserRoleMapping.init({
-      userId: {
+  WorkspaceSprintMapping.init({
+   workspaceId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "user",
+          model: "workspace",
           key: 'id'
         }
       },
-      roleId: {
-        allowNull: false,
+      sprintId: {
         type: Sequelize.UUID,
+        allowNull: false,
         references: {
-          model: "role",
+          model: "sprint",
           key: 'id'
         }
-      }
+      },
   }, {
     sequelize,
     paranoid: true,
-    tableName: "user_role_mapping",
-    modelName: 'UserRoleMapping',
+    tableName: "workspace_sprint_mapping",
+    modelName: 'WorkspaceSprintMapping',
   });
-  return UserRoleMapping;
+  return WorkspaceSprintMapping;
 };

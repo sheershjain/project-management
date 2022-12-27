@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()')
       },
-      tag: {
+     tag: {
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true
@@ -18,16 +18,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true
-      },
-      deadline: {
-        type: Sequelize.DATE,
-        allowNull: false,
       }, 
-      workspace_id: {
+      taskId: {
       allowNull: false,
       type: Sequelize.UUID,
       references: {
-        model: "workspace",
+        model: "task",
         key: 'id'
       }
     },

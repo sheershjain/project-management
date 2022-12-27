@@ -12,17 +12,24 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.hasMany(models.TaskComment, {
-        foreignKey: 'taskId',
-        targetKey: 'id'
+        foreignKey: 'task_id',
+        sourceKey: 'id',
+         as: 'TaskComment'
+      });
+        
+     this.hasMany(models.Tag, {
+        foreignKey: 'task_id',
+        sourceKey: 'id',
+         as: 'Tag'
       });
 
       this.belongsTo(models.Sprint, {
-        foreignKey: 'sprintId',
+        foreignKey: 'sprint_id',
         targetKey: 'id'
       });
 
       this.belongsTo(models.User, {
-        foreignKey: 'userId',
+        foreignKey: 'user_id',
         targetKey: 'id'
       });
     }
@@ -33,10 +40,23 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         isAlpha: true
       },
+      description: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isAlpha: true
+      },
       pointer: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      deadline: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      watch: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      allowNull: false
+    },
       status: {
         type: Sequelize.STRING,
         allowNull: false,

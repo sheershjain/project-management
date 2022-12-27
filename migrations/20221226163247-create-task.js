@@ -2,14 +2,14 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('sprint', {
+    await queryInterface.createTable('task', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()')
       },
-      name: {
+      task: {
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true
@@ -19,15 +19,36 @@ module.exports = {
         allowNull: false,
         isAlpha: true
       },
+      pointer: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       deadline: {
         type: Sequelize.DATE,
         allowNull: false,
-      }, 
-      tag_id: {
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isAlpha: true
+      },
+      watch: {
+      type: Sequelize.ARRAY(Sequelize.STRING),
+      allowNull: false
+      },
+      sprint_id: {
       allowNull: false,
       type: Sequelize.UUID,
       references: {
-        model: "tag",
+        model: "sprint",
+        key: 'id'
+      }
+      },
+      user_id: {
+      allowNull: false,
+      type: Sequelize.UUID,
+      references: {
+        model: "user",
         key: 'id'
       }
     },
@@ -49,6 +70,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('sprint');
+    await queryInterface.dropTable('task');
   }
 };

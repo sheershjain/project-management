@@ -12,11 +12,12 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
        this.hasMany(models.Task, {
-        foreignKey: 'sprintId',
-        targetKey: 'id'
+        foreignKey: 'sprint_id',
+         sourceKey: 'id',
+         as: 'Task'
       });
-       this.belongsTo(models.Tag, {
-        foreignKey: 'tagId',
+       this.belongsTo(models.Workspace, {
+        foreignKey: 'workspace_id',
         targetKey: 'id'
       });
     }
@@ -36,11 +37,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
       }, 
-      tagId: {
+      workspaceId: {
       allowNull: false,
       type: Sequelize.UUID,
       references: {
-        model: "tag",
+        model: "workspace",
         key: 'id'
       }
     },

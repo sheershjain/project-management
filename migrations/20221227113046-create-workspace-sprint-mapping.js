@@ -2,22 +2,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('user_sprint_mapping', {
+    await queryInterface.createTable('workspace_sprint_mapping', {
       id: {
         allowNull: true,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal("uuid_generate_v4()"),
       },
-      user_id: {
+      workspaceId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
-          model: "user",
+          model: "workspace",
           key: 'id'
         }
       },
-      sprint_id: {
+      sprintId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
@@ -43,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('user_sprint_mapping');
+    await queryInterface.dropTable('workspace_sprint_mapping');
   }
 };

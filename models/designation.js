@@ -13,16 +13,13 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.User, {
         through: models.UserDesignationMapping,
-        foreignKey: 'designationId',
+          foreignKey: 'designation_id',
+          sourceKey: 'id',
+        
       });
     }
   }
   Designation.init({
-     designationCode: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        isAlpha: true
-      },
       designationTitle: {
         type: Sequelize.STRING,
         allowNull: false,

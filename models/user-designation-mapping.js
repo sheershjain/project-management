@@ -12,11 +12,13 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, {
-        foreignKey: 'userId'
+        foreignKey: 'user_id',
+        targetKey: 'id'
       });
 
       this.belongsTo(models.Designation, {
-        foreignKey: 'designationId'
+        foreignKey: 'designation_id',
+        targetKey: 'id'
       });
     }
   }

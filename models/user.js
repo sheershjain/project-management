@@ -13,27 +13,23 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.Designation, {
         through: models.UserDesignationMapping,
-        foreignKey: 'userId',
+        foreignKey: 'user_id',
       });
 
       this.belongsToMany(models.Role, {
         through: models.UserRoleMapping,
-        foreignKey: 'userId',
+        foreignKey: 'user_id',
       });
 
       this.belongsToMany(models.Workspace, {
         through: models.UserWorkspaceMapping,
-        foreignKey: 'userId',
-      });
-
-      this.belongsToMany(models.Sprint, {
-        foreignKey: 'userId',
-        targetKey: 'id'
+        foreignKey: 'user_id',
       });
 
        this.hasMany(models.Task, {
-        foreignKey: 'userId',
-        targetKey: 'id'
+        foreignKey: 'user_id',
+         targetKey: 'id',
+        as: 'Task'
       });
 
 
@@ -62,6 +58,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         isAlphanumeric: true,
+    },
+    role: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
   }, {
     sequelize,

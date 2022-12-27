@@ -9,11 +9,6 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()')
       },
-      designation_code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        isAlpha: true
-      },
       designation_title: {
         type: Sequelize.STRING,
         allowNull: false,
