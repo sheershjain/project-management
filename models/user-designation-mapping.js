@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class UserDesignationMapping extends Model {
     /**
@@ -12,38 +10,43 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, {
-        foreignKey: 'user_id',
-        targetKey: 'id'
+        foreignKey: "user_id",
+        targetKey: "id",
+        as: "User",
       });
 
       this.belongsTo(models.Designation, {
-        foreignKey: 'designation_id',
-        targetKey: 'id'
+        foreignKey: "designation_id",
+        targetKey: "id",
+        as: "Designation",
       });
     }
   }
-  UserDesignationMapping.init({
-    userId: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "user",
-        key: 'id'
-      }
+  UserDesignationMapping.init(
+    {
+      userId: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "user",
+          key: "id",
+        },
+      },
+      designationId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: "designation",
+          key: "id",
+        },
+      },
     },
-    designationId: {
-      type: Sequelize.UUID,
-      allowNull: false,
-      references: {
-        model: "designation",
-        key: 'id'
-      }
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "user_designation_mapping",
+      modelName: "UserDesignationMapping",
     }
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "user_designation_mapping",
-    modelName: 'UserDesignationMapping',
-  });
+  );
   return UserDesignationMapping;
 };

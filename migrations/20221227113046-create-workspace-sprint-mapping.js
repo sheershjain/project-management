@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('workspace_sprint_mapping', {
+    await queryInterface.createTable("workspace_sprint_mapping", {
       id: {
         allowNull: true,
         primaryKey: true,
@@ -14,16 +14,16 @@ module.exports = {
         type: Sequelize.UUID,
         references: {
           model: "workspace",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
       sprintId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "sprint",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,10 +39,10 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: null,
         allowNull: true,
-      }
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('workspace_sprint_mapping');
-  }
+    await queryInterface.dropTable("workspace_sprint_mapping");
+  },
 };

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class WorkspaceSprintMapping extends Model {
     /**
@@ -12,38 +10,43 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Workspace, {
-        foreignKey: 'workspace_id',
-        targetKey: 'id'
+        foreignKey: "workspace_id",
+        targetKey: "id",
+        as: "Workspace",
       });
 
       this.belongsTo(models.Sprint, {
-        foreignKey: 'sprint_id',
-        targetKey: 'id'
+        foreignKey: "sprint_id",
+        targetKey: "id",
+        as: "Sprint",
       });
     }
   }
-  WorkspaceSprintMapping.init({
-   workspaceId: {
+  WorkspaceSprintMapping.init(
+    {
+      workspaceId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
           model: "workspace",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
       sprintId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "sprint",
-          key: 'id'
-        }
+          key: "id",
+        },
       },
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "workspace_sprint_mapping",
-    modelName: 'WorkspaceSprintMapping',
-  });
+    },
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "workspace_sprint_mapping",
+      modelName: "WorkspaceSprintMapping",
+    }
+  );
   return WorkspaceSprintMapping;
 };

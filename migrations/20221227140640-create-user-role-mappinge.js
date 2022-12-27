@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_designation_mapping", {
+    await queryInterface.createTable("user_role_mapping", {
       id: {
         allowNull: true,
         primaryKey: true,
@@ -17,11 +17,11 @@ module.exports = {
           key: "id",
         },
       },
-      designation_id: {
+      role_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "designation",
+          model: "role",
           key: "id",
         },
       },
@@ -43,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("user_designation_mapping");
+    await queryInterface.dropTable("user_role_mapping");
   },
 };

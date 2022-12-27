@@ -1,23 +1,23 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('task', {
+    await queryInterface.createTable("task", {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()')
+        defaultValue: Sequelize.literal("uuid_generate_v4()"),
       },
       task: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       description: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       pointer: {
         type: Sequelize.INTEGER,
@@ -30,46 +30,46 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
         allowNull: false,
-        isAlpha: true
+        isAlpha: true,
       },
       watch: {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      allowNull: false
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
       },
       sprint_id: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "sprint",
-        key: 'id'
-      }
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "sprint",
+          key: "id",
+        },
       },
       user_id: {
-      allowNull: false,
-      type: Sequelize.UUID,
-      references: {
-        model: "user",
-        key: 'id'
-      }
-    },
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "user",
+          key: "id",
+        },
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
       },
       deleted_at: {
         allowNull: true,
         type: Sequelize.DATE,
-        defaultValue: null
-      }
+        defaultValue: null,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('task');
-  }
+    await queryInterface.dropTable("task");
+  },
 };

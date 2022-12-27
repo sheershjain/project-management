@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   class User extends Model {
     /**
@@ -13,30 +11,32 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.Designation, {
         through: models.UserDesignationMapping,
-        foreignKey: 'user_id',
+        foreignKey: "user_id",
+        as: "Designation",
       });
 
       this.belongsToMany(models.Role, {
         through: models.UserRoleMapping,
-        foreignKey: 'user_id',
+        foreignKey: "user_id",
+        as: "Role",
       });
 
       this.belongsToMany(models.Workspace, {
         through: models.UserWorkspaceMapping,
-        foreignKey: 'user_id',
+        foreignKey: "user_id",
+        as: "Workspace",
       });
 
-       this.hasMany(models.Task, {
-        foreignKey: 'user_id',
-         targetKey: 'id',
-        as: 'Task'
+      this.hasMany(models.Task, {
+        foreignKey: "user_id",
+        targetKey: "id",
+        as: "Task",
       });
-
-
     }
   }
-  User.init({
-   firstName: {
+  User.init(
+    {
+      firstName: {
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true,
@@ -58,16 +58,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
         isAlphanumeric: true,
-    },
-    role: {
-        type: Sequelize.STRING,
-        allowNull: false,
       },
-  }, {
-    sequelize,
-    paranoid: true,
-    tableName: "user",
-    modelName: 'User',
-  });
+    },
+    {
+      sequelize,
+      paranoid: true,
+      tableName: "user",
+      modelName: "User",
+    }
+  );
   return User;
 };
