@@ -9,6 +9,10 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal("uuid_generate_v4()"),
       },
+      role_code: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       role_key: {
         type: Sequelize.STRING,
         allowNull: false,
