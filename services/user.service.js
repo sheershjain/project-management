@@ -207,8 +207,34 @@ const forgetPassword = async (payload) => {
   const userId = findUser.dataValues.id;
   await redisClient.set(randomToken, userId, 20);
   mailer.sendMail(body, subject, recipient);
-
   return "reset password link send successfully";
+};
+
+const resetPasswordByLink = async (payload, params) => {
+  const resetToken = params.token;
+  const password = payload.password;
+  let key = resetToken;
+  const cachedUserId = await redisClient.get(key);
+  if (!cachedUserId) {
+    throw new Error("Invalid Reset Link");
+  }
+
+  const userExist = await models.User.findOne({ where: { id: cachedUserId } });
+  if (!userExist) {
+    throw new Error("User Not Found");
+  }
+  await redisClient.del(key);
+
+  await models.User.update(
+    { password: await bcrypt.hash(password, 10) },
+    { where: { email: userExist.dataValues.email } }
+  );
+
+  const body = "Password reset successfull";
+  const subject = "Password reset";
+  const recipient = userExist.dataValues.email;
+  mailer.sendMail(body, subject, recipient);
+  return "Password reset successfully";
 };
 
 const refreshToken = async (payload) => {
@@ -236,4 +262,5 @@ module.exports = {
   resetPassword,
   forgetPassword,
   refreshToken,
+  resetPasswordByLink,
 };

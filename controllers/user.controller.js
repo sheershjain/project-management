@@ -86,6 +86,17 @@ const refreshToken = async (req, res, next) => {
   }
 };
 
+const resetPasswordByLink = async (req, res, next) => {
+  try {
+    const { body: payload, params } = req;
+    const data = await userService.resetPasswordByLink(payload, params);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -94,4 +105,5 @@ module.exports = {
   resetPassword,
   forgetPassword,
   refreshToken,
+  resetPasswordByLink,
 };

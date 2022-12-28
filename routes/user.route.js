@@ -22,8 +22,15 @@ router.patch(
 
 router.patch(
   "/forget-password",
-  //   validator.userValidator.resetPassword,
+  validator.userValidator.forgetPassword,
   controllers.User.forgetPassword,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/reset-password/:token",
+  validator.userValidator.resetPasswordByLink,
+  controllers.User.resetPasswordByLink,
   genericResponse.sendResponse
 );
 
