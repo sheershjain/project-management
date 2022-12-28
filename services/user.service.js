@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const mailer = require("../helper/send-mail.helper");
+const { query } = require("express");
 
 const createUser = async (payload) => {
   const password = randomstring.generate(7);
@@ -134,21 +135,46 @@ const loginUser = async (payload) => {
 };
 
 const getAllUser = async (query) => {
-  let limit = query.page == 0 ? null : 3;
+  let limit = query.page == 0 ? null : query.limit;
   let page = query.page < 2 ? 0 : query.page;
 
   const users = await models.User.findAll({
     attributes: {
       exclude: ["created_at", "updated_at", "deleted_at", "password"],
     },
-    // limit: limit,
-    // offset: page*3
+    include: [
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
+    ],
+    limit: limit,
+    offset: page * 3,
   });
   return users;
+};
+
+const getSingleUser = async (query) => {
+  let user = await models.User.findOne({
+    where: { id: query.userId },
+    attributes: {
+      exclude: ["deleted_at", "created_at", "updated_at", "password"],
+    },
+    include: [
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
+    ],
+  });
+  return user;
 };
 
 module.exports = {
   createUser,
   loginUser,
   getAllUser,
+  getSingleUser,
 };

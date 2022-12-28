@@ -37,8 +37,24 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
+const getSingleUser = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const payload = {
+      userId: params.userId,
+    };
+
+    const data = await userService.getSingleUser(payload);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   getAllUser,
+  getSingleUser,
 };
