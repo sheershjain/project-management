@@ -26,7 +26,19 @@ const loginUser = async (req, res, next) => {
   }
 };
 
+const getAllUser = async (req, res, next) => {
+  try {
+    const { query } = req;
+    const data = await userService.getAllUser(query);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
+  getAllUser,
 };

@@ -133,7 +133,22 @@ const loginUser = async (payload) => {
   };
 };
 
+const getAllUser = async (query) => {
+  let limit = query.page == 0 ? null : 3;
+  let page = query.page < 2 ? 0 : query.page;
+
+  const users = await models.User.findAll({
+    attributes: {
+      exclude: ["created_at", "updated_at", "deleted_at", "password"],
+    },
+    // limit: limit,
+    // offset: page*3
+  });
+  return users;
+};
+
 module.exports = {
   createUser,
   loginUser,
+  getAllUser,
 };

@@ -21,4 +21,13 @@ router.post(
   genericResponse.sendResponse
 );
 
+router.get(
+  "/users",
+  checkAccessToken,
+  verifyAdmin,
+  // validator.userValidator.createUserSchema,
+  controllers.User.getAllUser,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

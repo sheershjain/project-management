@@ -13,6 +13,12 @@ const checkAccessToken = async (req, res, next) => {
       where: {
         id: decoded_jwt.userId,
       },
+      include: [
+        {
+          model: models.Role,
+          as: "Role",
+        },
+      ],
     });
     if (!user) {
       throw new Error("User Not found");
@@ -26,7 +32,7 @@ const checkAccessToken = async (req, res, next) => {
 
 const verifyAdmin = (req, res, next) => {
   try {
-    if (req.user.role == "admin") {
+    if (req.user.Role[0].roleCode == 1001) {
       next();
     } else {
       return res.status(403).json({ message: "Access denied" });
