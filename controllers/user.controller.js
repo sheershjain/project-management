@@ -52,9 +52,21 @@ const getSingleUser = async (req, res, next) => {
   }
 };
 
+const resetPassword = async (req, res, next) => {
+  try {
+    const { body: payload, user } = req;
+    const data = await userService.resetPassword(payload, user);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   getAllUser,
   getSingleUser,
+  resetPassword,
 };

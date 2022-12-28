@@ -28,4 +28,12 @@ module.exports = {
     });
     validateRequest(req, res, next, schema, "body");
   },
+
+  resetPassword: async (req, res, next) => {
+    const schema = Joi.object({
+      oldPassword: Joi.string().required(),
+      newPassword: Joi.string().required(),
+    });
+    validateRequest(req, res, next, schema, "body");
+  },
 };

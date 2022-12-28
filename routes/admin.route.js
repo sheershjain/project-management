@@ -14,13 +14,6 @@ router.post(
   genericResponse.sendResponse
 );
 
-router.post(
-  "/login",
-  validator.userValidator.loginSchema,
-  controllers.User.loginUser,
-  genericResponse.sendResponse
-);
-
 router.get(
   "/users",
   checkAccessToken,

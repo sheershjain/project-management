@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const mailer = require("../helper/send-mail.helper");
 const { query } = require("express");
+const { where } = require("sequelize");
 
 const createUser = async (payload) => {
   const password = randomstring.generate(7);
@@ -112,16 +113,10 @@ const loginUser = async (payload) => {
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
     process.env.SECRET_KEY_ACCESS
-    // {
-    //     expiresIn: process.env.JWT_ACCESS_EXPIRATION
-    // }
   );
   const refreshToken = jwt.sign(
     { userId: user.dataValues.id },
     process.env.SECRET_KEY_REFRESH
-    // {
-    //     expiresIn: process.env.JWT_REFRESH_EXPIRATION
-    // }
   );
 
   delete user.dataValues.password;
@@ -172,9 +167,26 @@ const getSingleUser = async (query) => {
   return user;
 };
 
+const resetPassword = async (payload, user) => {
+  const userId = user.id;
+  const password = payload.oldPassword;
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error("Wrong credentials");
+  }
+  const newPassword = await bcrypt.hash(payload.newPassword, 10);
+  const updatePassword = await models.User.update(
+    { password: newPassword },
+    { where: { id: userId } }
+  );
+
+  return "password reset successdully";
+};
+
 module.exports = {
   createUser,
   loginUser,
   getAllUser,
   getSingleUser,
+  resetPassword,
 };
