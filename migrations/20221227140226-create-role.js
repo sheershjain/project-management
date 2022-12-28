@@ -9,11 +9,15 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal("uuid_generate_v4()"),
       },
+<<<<<<< HEAD
       role_code: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
       role_key: {
+=======
+      role_title: {
+>>>>>>> staging
         type: Sequelize.STRING,
         allowNull: false,
         isAlpha: true,
