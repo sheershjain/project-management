@@ -95,31 +95,39 @@ const createUser = async (payload) => {
 const loginUser = async (payload) => {
   const { email, password } = payload;
 
+  console.log(payload);
+
   const user = await models.User.findOne({
     where: {
       email: email,
     },
   });
 
-  if (!user) {
-    throw new Error("User Not Found!");
-  }
-
-  const match = await bcrypt.compare(password, user.dataValues.password);
-  if (!match) {
-    throw new Error("Wrong credentials");
+  let key = user.dataValues.id + "-refresh-token";
+  let refreshToken = await redisClient.get(key);
+  if (!refreshToken) {
+    const match = await bcrypt.compareSync(password, user.dataValues.password);
+    if (!match) {
+      throw new Error("Wrong email or password");
+    }
+    refreshToken = jwt.sign(
+      { userId: user.dataValues.id },
+      process.env.SECRET_KEY_REFRESH,
+      {
+        expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+      }
+    );
   }
 
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
-    process.env.SECRET_KEY_ACCESS
-  );
-  const refreshToken = jwt.sign(
-    { userId: user.dataValues.id },
-    process.env.SECRET_KEY_REFRESH
+    process.env.SECRET_KEY_ACCESS,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+    }
   );
 
-  delete user.dataValues.password;
+  await redisClient.set(key, refreshToken);
 
   return {
     id: user.id,
@@ -203,6 +211,23 @@ const forgetPassword = async (payload) => {
   return "reset password link send successfully";
 };
 
+const refreshToken = async (payload) => {
+  const { userId, token: refreshToken } = payload;
+
+  let newAccessToken = jwt.sign(
+    { userId: userId },
+    process.env.SECRET_KEY_ACCESS,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+    }
+  );
+
+  return {
+    accessToken: newAccessToken,
+    refreshToken,
+  };
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -210,4 +235,5 @@ module.exports = {
   getSingleUser,
   resetPassword,
   forgetPassword,
+  refreshToken,
 };

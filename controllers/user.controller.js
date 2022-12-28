@@ -74,6 +74,18 @@ const forgetPassword = async (req, res, next) => {
   }
 };
 
+const refreshToken = async (req, res, next) => {
+  try {
+    const { body: payload } = req.body;
+
+    const data = await services.userService.refreshToken(payload);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -81,4 +93,5 @@ module.exports = {
   getSingleUser,
   resetPassword,
   forgetPassword,
+  refreshToken,
 };
