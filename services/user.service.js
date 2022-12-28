@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const mailer = require("../helper/send-mail.helper");
-const { query } = require("express");
-const { where } = require("sequelize");
+const UniqueStringGenerator = require("unique-string-generator");
+const redisClient = require("../utility/redis");
 
 const createUser = async (payload) => {
   const password = randomstring.generate(7);
@@ -183,10 +183,31 @@ const resetPassword = async (payload, user) => {
   return "password reset successdully";
 };
 
+const forgetPassword = async (payload) => {
+  const email = payload.email;
+  const findUser = await models.User.findOne({
+    where: { email: email },
+  });
+
+  if (!findUser) {
+    throw new Error("user not found");
+  }
+  const randomToken = UniqueStringGenerator.UniqueString();
+  const body = `reset password link- ${process.env.BASE_URL}/user/reset-password/${randomToken}`;
+  const subject = "reset password";
+  const recipient = email;
+  const userId = findUser.dataValues.id;
+  await redisClient.set(randomToken, userId, 20);
+  mailer.sendMail(body, subject, recipient);
+
+  return "reset password link send successfully";
+};
+
 module.exports = {
   createUser,
   loginUser,
   getAllUser,
   getSingleUser,
   resetPassword,
+  forgetPassword,
 };

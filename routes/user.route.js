@@ -20,4 +20,11 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/forget-password",
+  //   validator.userValidator.resetPassword,
+  controllers.User.forgetPassword,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
