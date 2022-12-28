@@ -30,4 +30,13 @@ router.get(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/designation",
+  checkAccessToken,
+  verifyAdmin,
+  validator.designationValidator.designationSchema,
+  controllers.Designation.updateDesignation,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
