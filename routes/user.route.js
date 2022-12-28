@@ -7,13 +7,18 @@ const router = Router();
 
 router.post(
   "/user",
-//   checkAccessToken,
-//   verifyAdmin,
+  //   checkAccessToken,
+  //   verifyAdmin,
   validator.userValidator.createUserSchema,
   controllers.User.createUser,
   genericResponse.sendResponse
 );
 
-
+router.post(
+  "/login",
+  validator.userValidator.loginSchema,
+  controllers.User.loginUser,
+  genericResponse.sendResponse
+);
 
 module.exports = router;

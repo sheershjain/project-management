@@ -20,4 +20,12 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
+
+  loginSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      email: Joi.string().email().lowercase().required(),
+      password: Joi.string().required(),
+    });
+    validateRequest(req, res, next, schema, "body");
+  },
 };
