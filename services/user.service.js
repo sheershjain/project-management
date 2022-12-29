@@ -103,10 +103,13 @@ const loginUser = async (payload) => {
     },
   });
 
+  if (!user) {
+    throw new Error("User Not Found!");
+  }
   let key = user.dataValues.id + "-refresh-token";
   let refreshToken = await redisClient.get(key);
   if (!refreshToken) {
-    const match = await bcrypt.compareSync(password, user.dataValues.password);
+    const match = await bcrypt.compare(password, user.dataValues.password);
     if (!match) {
       throw new Error("Wrong email or password");
     }
@@ -119,15 +122,22 @@ const loginUser = async (payload) => {
     );
   }
 
+  const match = await bcrypt.compare(password, user.dataValues.password);
+  if (!match) {
+    throw new Error("Wrong credentials");
+  }
+
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
-    process.env.SECRET_KEY_ACCESS,
-    {
-      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
-    }
+    process.env.SECRET_KEY_ACCESS
+  );
+  refreshToken = jwt.sign(
+    { userId: user.dataValues.id },
+    process.env.SECRET_KEY_REFRESH
   );
 
-  await redisClient.set(key, refreshToken);
+  delete user.dataValues.password;
+  await redisClient.set(key, refreshToken, 60 * 24);
 
   return {
     id: user.id,
