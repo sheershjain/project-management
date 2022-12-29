@@ -48,4 +48,13 @@ router.post(
   genericResponse.sendResponse
 );
 
+router.post(
+  "/user-workspace",
+  checkAccessToken,
+  verifyAdmin,
+  validator.workspaceValidator.addUserWorkspaceSchema,
+  controllers.Workspace.addUserInWorkspace,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

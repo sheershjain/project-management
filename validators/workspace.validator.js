@@ -10,4 +10,14 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
+
+  addUserWorkspaceSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      workspaceId: Joi.string().guid().required(),
+      designationId: Joi.string().guid().required(),
+      userId: Joi.string().guid().required(),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
 };

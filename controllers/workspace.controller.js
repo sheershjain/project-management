@@ -15,6 +15,21 @@ const createWorkspace = async (req, res, next) => {
   }
 };
 
+const addUserInWorkspace = async (req, res, next) => {
+  try {
+    const { body: payload } = req;
+    const response = await WorkspaceService.addUserInWorkspace(payload);
+    if (response.error) {
+      throw new Error(response.error.message);
+    }
+    res.data = response;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createWorkspace,
+  addUserInWorkspace,
 };
