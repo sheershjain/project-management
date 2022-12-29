@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
-  class UserRolMappinge extends Model {
+  class UserRoleMapping extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -22,9 +22,9 @@ module.exports = (sequelize, Sequelize) => {
       });
     }
   }
-  UserRolMappinge.init(
+  UserRoleMapping.init(
     {
-      userId: {
+      user_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      roleId: {
+      role_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
@@ -45,8 +45,8 @@ module.exports = (sequelize, Sequelize) => {
       sequelize,
       paranoid: true,
       tableName: "user_role_mapping",
-      modelName: "UserRolMappinge",
+      modelName: "UserRoleMapping",
     }
   );
-  return UserRolMappinge;
+  return UserRoleMapping;
 };

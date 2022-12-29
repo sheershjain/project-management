@@ -19,6 +19,10 @@ module.exports = (sequelize, Sequelize) => {
   }
   Designation.init(
     {
+      designationCode: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       designationTitle: {
         type: Sequelize.STRING,
         allowNull: false,

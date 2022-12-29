@@ -1,12 +1,10 @@
-const { commonErrorHandler } = require('./errorHandler');
-
+const { commonErrorHandler } = require("./error-handler.helper");
 
 const validateRequest = (req, res, next, schema, requestParamterType) => {
-
   let requestData = {};
-  if (requestParamterType === 'body') {
+  if (requestParamterType === "body") {
     requestData = req.body;
-  } else if (requestParamterType === 'query') {
+  } else if (requestParamterType === "query") {
     requestData = req.query;
   } else {
     requestData = req.params;
@@ -15,9 +13,9 @@ const validateRequest = (req, res, next, schema, requestParamterType) => {
   const { error, value } = schema.validate(requestData);
 
   if (!error) {
-    if (requestParamterType === 'body') {
+    if (requestParamterType === "body") {
       req.body = value;
-    } else if (requestParamterType === 'query') {
+    } else if (requestParamterType === "query") {
       req.query = value;
     } else {
       req.params = value;
@@ -27,10 +25,9 @@ const validateRequest = (req, res, next, schema, requestParamterType) => {
   }
 
   const { details } = error;
-  const message = details.map(i => i.message).join(',');
+  const message = details.map((i) => i.message).join(",");
   return commonErrorHandler(req, res, message, 422);
 };
-
 
 module.exports = {
   validateRequest,
