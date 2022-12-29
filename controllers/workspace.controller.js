@@ -29,7 +29,36 @@ const addUserInWorkspace = async (req, res, next) => {
   }
 };
 
+const getAllWorkSpace = async (req, res, next) => {
+  try {
+    const { query } = req;
+    const data = await WorkspaceService.getAllWorkSpace(query);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
+const updateWorkspace = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const { body: payload, user } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+
+    const data = await WorkspaceService.updateWorkspace(payload, user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
+  getAllWorkSpace,
+  updateWorkspace,
 };

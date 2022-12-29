@@ -1,6 +1,6 @@
 const models = require("../models");
 const { sequelize } = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const createWorkspace = async (payload, user) => {
   const trans = await sequelize.transaction();
@@ -56,37 +56,85 @@ const addUserInWorkspace = async (payload) => {
     throw new Error("Workspace Not Found");
   }
 
-  const designation = await models.Designation.findOne({
-    id: payload.designationId,
-  });
+  //   let existingRelation = await models.UserWorkspaceMapping.findOne({
+  //     where: {
+  //       [Op.and]: [
+  //         { user_id: payload.userId },
+  //         { designation_id: payload.designationId },
+  //       ],
+  //     },
+  //   });
 
-  if (!designation) {
-    throw new Error("Designation Not Found");
-  }
-
-  let existingRelation = await models.UserWorkspaceMapping.findOne({
-    where: {
-      [Op.and]: [
-        { user_id: payload.userId },
-        { designation_id: payload.designationId },
-      ],
-    },
-  });
-
-  if (existingRelation) {
-    throw new Error("User is already exist in workspace ");
-  }
+  //   if (existingRelation) {
+  //     throw new Error("User is already exist in workspace ");
+  //   }
 
   let userWorkspaceData = {
     user_id: payload.userId,
     workspace_id: payload.workspaceId,
-    designation_id: payload.designationId,
+    designation_id: "98ee802b-bbbb-49f4-b2ff-7695a480513b",
   };
   await models.UserWorkspaceMapping.create(userWorkspaceData);
   return payload;
 };
 
+const getAllWorkSpace = async (query) => {
+  let limit = query.page == 0 ? null : query.limit;
+  let page = query.page < 2 ? 0 : query.page;
+
+  const workspace = await models.Workspace.findAll({
+    attributes: {
+      exclude: ["created_at", "updated_at", "deleted_at"],
+    },
+    include: [
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
+      {
+        model: models.User,
+        as: "User",
+        attributes: ["email"],
+      },
+    ],
+    // limit: limit,
+    // offset: page * 3,
+  });
+  return workspace;
+};
+
+const updateWorkspace = async (payload, user, paramsData) => {
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+
+  let existingManager = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [{ user_id: user.id }, { workspace_id: paramsData.workspaceId }],
+    },
+  });
+
+  if (!existingManager) {
+    throw new Error("Access denied");
+  }
+
+  const workspace = await models.Workspace.update(
+    {
+      description: payload.description,
+    },
+    { where: { id: paramsData.workspaceId } }
+  );
+  return "workspace description updated successfully";
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
+  getAllWorkSpace,
+  updateWorkspace,
 };

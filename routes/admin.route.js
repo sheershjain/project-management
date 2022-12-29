@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const controllers = require("../controllers");
-const { verifyAdmin, checkAccessToken } = require("../middlewares/auth");
+const {
+  verifyAdmin,
+  checkAccessToken,
+} = require("../middlewares/auth");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -39,22 +42,14 @@ router.patch(
   genericResponse.sendResponse
 );
 
-router.post(
+router.get(
   "/workspace",
   checkAccessToken,
   verifyAdmin,
-  validator.workspaceValidator.workspaceSchema,
-  controllers.Workspace.createWorkspace,
+  controllers.Workspace.getAllWorkSpace,
   genericResponse.sendResponse
 );
 
-router.post(
-  "/user-workspace",
-  checkAccessToken,
-  verifyAdmin,
-  validator.workspaceValidator.addUserWorkspaceSchema,
-  controllers.Workspace.addUserInWorkspace,
-  genericResponse.sendResponse
-);
+
 
 module.exports = router;

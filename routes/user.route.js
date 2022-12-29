@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const controllers = require("../controllers");
-const { checkAccessToken } = require("../middlewares/auth");
+const { checkAccessToken, verifyManager } = require("../middlewares/auth");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -31,6 +31,32 @@ router.patch(
   "/reset-password/:token",
   validator.userValidator.resetPasswordByLink,
   controllers.User.resetPasswordByLink,
+  genericResponse.sendResponse
+);
+
+router.post(
+  "/user-workspace",
+  checkAccessToken,
+  verifyManager,
+  validator.workspaceValidator.addUserWorkspaceSchema,
+  controllers.Workspace.addUserInWorkspace,
+  genericResponse.sendResponse
+);
+
+router.post(
+  "/workspace",
+  checkAccessToken,
+  verifyManager,
+  validator.workspaceValidator.workspaceSchema,
+  controllers.Workspace.createWorkspace,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/workspace/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  controllers.Workspace.updateWorkspace,
   genericResponse.sendResponse
 );
 
