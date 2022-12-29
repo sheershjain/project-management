@@ -14,6 +14,22 @@ module.exports = {
   addUserWorkspaceSchema: async (req, res, next) => {
     const schema = Joi.object({
       workspaceId: Joi.string().guid().required(),
+      userId: Joi.string().guid().required(),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
+
+  updateWorkspaceSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      description: Joi.string().min(5).required(),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
+
+  updateDesignationWorkspaceSchema: async (req, res, next) => {
+    const schema = Joi.object({
       designationId: Joi.string().guid().required(),
       userId: Joi.string().guid().required(),
     });

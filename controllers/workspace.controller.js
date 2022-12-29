@@ -48,7 +48,31 @@ const updateWorkspace = async (req, res, next) => {
       workspaceId: params.workspaceId,
     };
 
-    const data = await WorkspaceService.updateWorkspace(payload, user, paramsData);
+    const data = await WorkspaceService.updateWorkspace(
+      payload,
+      user,
+      paramsData
+    );
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
+const updateUserDesignationInWorkspace = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const { body: payload, user } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+
+    const data = await WorkspaceService.updateUserDesignationInWorkspace(
+      payload,
+      user,
+      paramsData
+    );
     res.data = data;
     next();
   } catch (error) {
@@ -61,4 +85,5 @@ module.exports = {
   addUserInWorkspace,
   getAllWorkSpace,
   updateWorkspace,
+  updateUserDesignationInWorkspace,
 };

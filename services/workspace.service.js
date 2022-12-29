@@ -56,18 +56,18 @@ const addUserInWorkspace = async (payload) => {
     throw new Error("Workspace Not Found");
   }
 
-  //   let existingRelation = await models.UserWorkspaceMapping.findOne({
-  //     where: {
-  //       [Op.and]: [
-  //         { user_id: payload.userId },
-  //         { designation_id: payload.designationId },
-  //       ],
-  //     },
-  //   });
+  let existingRelation = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: payload.userId },
+        { workspace_id: payload.workspaceId },
+      ],
+    },
+  });
 
-  //   if (existingRelation) {
-  //     throw new Error("User is already exist in workspace ");
-  //   }
+  if (existingRelation) {
+    throw new Error("User is already exist in workspace ");
+  }
 
   let userWorkspaceData = {
     user_id: payload.userId,
@@ -115,7 +115,10 @@ const updateWorkspace = async (payload, user, paramsData) => {
 
   let existingManager = await models.UserWorkspaceMapping.findOne({
     where: {
-      [Op.and]: [{ user_id: user.id }, { workspace_id: paramsData.workspaceId }],
+      [Op.and]: [
+        { user_id: user.id },
+        { workspace_id: paramsData.workspaceId },
+      ],
     },
   });
 
@@ -132,9 +135,57 @@ const updateWorkspace = async (payload, user, paramsData) => {
   return "workspace description updated successfully";
 };
 
+const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
+  const checkUser = await models.User.findOne({
+    where: { id: payload.userId },
+  });
+
+  if (!checkUser) {
+    throw new Error("User not found");
+  }
+
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+
+  let existingRelation = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: payload.userId },
+        { workspace_id: paramsData.workspaceId },
+        { designation_id: payload.designationId },
+      ],
+    },
+  });
+
+  if (existingRelation) {
+    throw new Error("This relation is already exist in workspace ");
+  }
+  await models.UserWorkspaceMapping.update(
+    {
+      designation_id: payload.designationId,
+    },
+    {
+      where: {
+        [Op.and]: [
+          { user_id: payload.userId },
+          { workspace_id: paramsData.workspaceId },
+        ],
+      },
+    }
+  );
+
+  return payload;
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
   getAllWorkSpace,
   updateWorkspace,
+  updateUserDesignationInWorkspace,
 };

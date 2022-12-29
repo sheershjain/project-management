@@ -56,7 +56,17 @@ router.patch(
   "/workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
+  validator.workspaceValidator.updateWorkspaceSchema,
   controllers.Workspace.updateWorkspace,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/user-workspace/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  validator.workspaceValidator.updateDesignationWorkspaceSchema,
+  controllers.Workspace.updateUserDesignationInWorkspace,
   genericResponse.sendResponse
 );
 
