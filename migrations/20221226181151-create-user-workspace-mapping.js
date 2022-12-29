@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("workspace_sprint_mapping", {
+    await queryInterface.createTable("user_workspace_mapping", {
       id: {
         allowNull: true,
         primaryKey: true,
@@ -51,6 +51,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("workspace_sprint_mapping");
+    await queryInterface.dropTable("user_workspace_mapping");
   },
 };

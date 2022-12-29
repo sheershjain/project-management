@@ -39,4 +39,13 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.post(
+  "/workspace",
+  checkAccessToken,
+  verifyAdmin,
+  validator.workspaceValidator.workspaceSchema,
+  controllers.Workspace.createWorkspace,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
