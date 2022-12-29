@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
   }
   WorkspaceSprintMapping.init(
     {
-      workspaceId: {
+      workspace_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      sprintId: {
+      sprint_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {

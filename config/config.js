@@ -14,7 +14,7 @@ module.exports = {
     },
   },
   test: {
-     username: "",
+    username: "",
     password: "",
     database: "",
     host: "",
