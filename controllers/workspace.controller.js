@@ -95,6 +95,23 @@ const deactivateWorkspace = async (req, res, next) => {
     commonErrorHandler(req, res, error.message, 400, error);
   }
 };
+
+const removeUserWorkspace = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const { body: payload } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+
+    const data = await WorkspaceService.removeUserWorkspace(payload, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -102,4 +119,5 @@ module.exports = {
   updateWorkspace,
   updateUserDesignationInWorkspace,
   deactivateWorkspace,
+  removeUserWorkspace,
 };

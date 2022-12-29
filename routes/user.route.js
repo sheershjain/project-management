@@ -71,10 +71,19 @@ router.patch(
 );
 
 router.delete(
-  "/user-workspace/:workspaceId",
+  "/workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
   controllers.Workspace.deactivateWorkspace,
+  genericResponse.sendResponse
+);
+
+router.delete(
+  "/user-workspace/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  validator.workspaceValidator.removeUserWorkspaceSchema,
+  controllers.Workspace.removeUserWorkspace,
   genericResponse.sendResponse
 );
 

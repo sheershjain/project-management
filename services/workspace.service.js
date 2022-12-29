@@ -210,6 +210,38 @@ const deactivateWorkspace = async (user, paramsData) => {
   return "workspace deactivate successfully";
 };
 
+const removeUserWorkspace = async (payload, paramsData) => {
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+
+  let existingRelation = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: payload.userId },
+        { workspace_id: paramsData.workspaceId },
+      ],
+    },
+  });
+
+  if (!existingRelation) {
+    throw new Error("User is not exist in workspace");
+  }
+  await models.UserWorkspaceMapping.destroy({
+    where: {
+      [Op.and]: [
+        { user_id: payload.userId },
+        { workspace_id: paramsData.workspaceId },
+      ],
+    },
+  });
+  return "User remove successfully";
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -217,4 +249,5 @@ module.exports = {
   updateWorkspace,
   updateUserDesignationInWorkspace,
   deactivateWorkspace,
+  removeUserWorkspace,
 };
