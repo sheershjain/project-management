@@ -30,22 +30,5 @@ router.get(
   genericResponse.sendResponse
 );
 
-router.patch(
-  "/designation",
-  checkAccessToken,
-  verifyAdmin,
-  validator.designationValidator.designationSchema,
-  controllers.Designation.updateDesignation,
-  genericResponse.sendResponse
-);
-
-router.post(
-  "/workspace",
-  checkAccessToken,
-  verifyAdmin,
-  validator.workspaceValidator.workspaceSchema,
-  controllers.Workspace.createWorkspace,
-  genericResponse.sendResponse
-);
 
 module.exports = router;

@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
   }
   UserDesignationMapping.init(
     {
-      userId: {
+      user_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      designationId: {
+      designation_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {

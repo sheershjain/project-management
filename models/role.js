@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsToMany(models.User, {
-        through: models.UserRolMappinge,
+        through: models.UserRoleMapping,
         foreignKey: "role_id",
         sourceKey: "id",
         as: "User",
@@ -19,6 +19,10 @@ module.exports = (sequelize, Sequelize) => {
   }
   Role.init(
     {
+      roleCode: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       roleKey: {
         type: Sequelize.STRING,
         allowNull: false,
