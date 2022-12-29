@@ -48,7 +48,6 @@ const verifyAdmin = (req, res, next) => {
 
 const verifyManager = (req, res, next) => {
   try {
-    console.log(req.user, "==================");
     if (req.user.Designation[0].designationCode == 102) {
       next();
     } else {

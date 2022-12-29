@@ -70,4 +70,12 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.delete(
+  "/user-workspace/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  controllers.Workspace.deactivateWorkspace,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

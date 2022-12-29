@@ -182,10 +182,39 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   return payload;
 };
 
+const deactivateWorkspace = async (user, paramsData) => {
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+  let existingManager = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: user.id },
+        { workspace_id: paramsData.workspaceId },
+      ],
+    },
+  });
+
+  if (!existingManager) {
+    throw new Error("Access denied");
+  }
+  await models.Workspace.destroy({
+    where: {
+      id: paramsData.workspaceId,
+    },
+  });
+  return "workspace deactivate successfully";
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
   getAllWorkSpace,
   updateWorkspace,
   updateUserDesignationInWorkspace,
+  deactivateWorkspace,
 };
