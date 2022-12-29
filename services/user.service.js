@@ -103,6 +103,10 @@ const loginUser = async (payload) => {
     },
   });
 
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   let key = user.dataValues.id + "-refresh-token";
   let refreshToken = await redisClient.get(key);
   if (!refreshToken) {

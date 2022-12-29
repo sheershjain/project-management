@@ -30,4 +30,5 @@ router.get(
   genericResponse.sendResponse
 );
 
+
 module.exports = router;
