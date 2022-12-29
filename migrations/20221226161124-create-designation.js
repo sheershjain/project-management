@@ -8,13 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal("uuid_generate_v4()"),
-<<<<<<< HEAD
       },
       designation_code: {
         type: Sequelize.INTEGER,
         allowNull: false,
-=======
->>>>>>> staging
       },
       designation_title: {
         type: Sequelize.STRING,
