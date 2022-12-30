@@ -75,6 +75,10 @@ const addUserInWorkspace = async (payload) => {
     designation_id: "98ee802b-bbbb-49f4-b2ff-7695a480513b",
   };
   await models.UserWorkspaceMapping.create(userWorkspaceData);
+  const body = `you are added into  ${workspace.name}  workspace`;
+  const subject = "workspace";
+  const recipient = user.email;
+  mailer.sendMail(body, subject, recipient);
   return payload;
 };
 
@@ -239,6 +243,14 @@ const removeUserWorkspace = async (payload, paramsData) => {
       ],
     },
   });
+  const user = await models.User.findOne({
+    id: payload.userId,
+  });
+
+  const body = `you are remove from  ${workspace.name}  workspace`;
+  const subject = "workspace";
+  const recipient = user.email;
+  mailer.sendMail(body, subject, recipient);
   return "User remove successfully";
 };
 
