@@ -115,4 +115,12 @@ router.post(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/task",
+  checkAccessToken,
+  //   validator.taskValidator.createTaskSchema,
+  controllers.Task.updateTask,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

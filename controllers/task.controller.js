@@ -12,6 +12,18 @@ const createTask = async (req, res, next) => {
   }
 };
 
+const updateTask = async (req, res, next) => {
+  try {
+    const { body: payload, user } = req;
+    const data = await taskService.updateTask(payload, user);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
+  updateTask,
 };
