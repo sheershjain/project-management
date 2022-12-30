@@ -1,6 +1,10 @@
 const { Router } = require("express");
 const controllers = require("../controllers");
-const { checkAccessToken, verifyManager } = require("../middlewares/auth");
+const {
+  checkAccessToken,
+  verifyManager,
+  verifyLead,
+} = require("../middlewares/auth");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -84,6 +88,14 @@ router.delete(
   verifyManager,
   validator.workspaceValidator.removeUserWorkspaceSchema,
   controllers.Workspace.removeUserWorkspace,
+  genericResponse.sendResponse
+);
+
+router.post(
+  "/sprint",
+  checkAccessToken,
+  validator.sprintValidator.createSprintSchema,
+  controllers.Sprint.createSprint,
   genericResponse.sendResponse
 );
 
