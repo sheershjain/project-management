@@ -99,4 +99,12 @@ router.post(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/sprint/:sprintId",
+  checkAccessToken,
+  validator.sprintValidator.updateSprintSchema,
+  controllers.Sprint.updateSprint,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
