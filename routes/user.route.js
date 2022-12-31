@@ -3,6 +3,7 @@ const controllers = require("../controllers");
 const {
   checkAccessToken,
   checkRefreshToken,
+  verifyManager,
 } = require("../middlewares/auth.middleware");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
