@@ -158,8 +158,16 @@ router.get(
 router.patch(
   "/watch/:taskId",
   checkAccessToken,
-  // validator.taskValidator.updateTaskSchema,
   controllers.Task.watch,
+  genericResponse.sendResponse
+);
+
+router.post(
+  "/comment",
+  checkAccessToken,
+  validator.taskValidator.addTaskCommentSchema,
+  controllers.Task.addTaskComment,
+  serializer.taskSeralizer.addTaskComment,
   genericResponse.sendResponse
 );
 

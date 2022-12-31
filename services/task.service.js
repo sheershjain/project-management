@@ -3,6 +3,7 @@ const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
 const mailer = require("../helper/mail.helper");
 const moment = require("moment");
+const user = require("../models/user");
 
 const sprint = async (sprintId) => {
   const sprint = await models.Sprint.findOne({
@@ -159,10 +160,24 @@ const watch = async (user, paramsData) => {
   return "you are added into task";
 };
 
+const addTaskComment = async (payload, user) => {
+  const task = await models.Task.findOne({
+    where: {
+      [Op.and]: [{ id: payload.taskId }, { userId: user.id }],
+    },
+  });
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  const taskComment = await models.TaskComment.create(payload);
+  return taskComment;
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   myTask,
   watch,
+  addTaskComment,
 };

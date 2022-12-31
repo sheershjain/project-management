@@ -68,10 +68,22 @@ const watch = async (req, res, next) => {
   }
 };
 
+const addTaskComment = async (req, res, next) => {
+  try {
+    const { body: payload, user } = req;
+    const data = await taskService.addTaskComment(payload, user);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   myTask,
   watch,
+  addTaskComment,
 };

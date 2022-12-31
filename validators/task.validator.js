@@ -7,9 +7,9 @@ module.exports = {
       task: Joi.string().min(3).required(),
       description: Joi.string().min(5).required(),
       pointer: Joi.string().required(),
-      deadline: Joi.string().min(3).required(),
-      sprintId: Joi.string().min(3).required(),
-      userId: Joi.string().min(3).required(),
+      deadline: Joi.string().required(),
+      sprintId: Joi.string().guid().required(),
+      userId: Joi.string().guid().required(),
     });
 
     validateRequest(req, res, next, schema, "body");
@@ -21,6 +21,14 @@ module.exports = {
       description: Joi.string().min(5),
       pointer: Joi.string(),
       deadline: Joi.string().min(3),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
+  addTaskCommentSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      taskId: Joi.string().guid().required(),
+      comment: Joi.string().min(5).required(),
     });
 
     validateRequest(req, res, next, schema, "body");

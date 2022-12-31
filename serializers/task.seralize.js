@@ -31,7 +31,19 @@ const getMyTask = async (req, res, next) => {
   next();
 };
 
+const addTaskComment = async (req, res, next) => {
+  const data = res.data || null;
+  const response = {
+    id: data.id,
+    taskId: data.taskId,
+    comment: data.comment,
+  };
+  res.data = response;
+  next();
+};
+
 module.exports = {
   createTask,
   getMyTask,
+  addTaskComment,
 };
