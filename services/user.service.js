@@ -84,7 +84,7 @@ const createUser = async (payload) => {
     const subject = "project management registration";
     const recipient = payload.email;
     mailer.sendMail(body, subject, recipient);
-    return "user created successufully";
+    return payload;
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
