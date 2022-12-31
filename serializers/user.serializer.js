@@ -2,7 +2,6 @@ const { date } = require("joi");
 
 const createUser = async (req, res, next) => {
   const data = res.data || null;
-  console.log(data, "---------------");
   const response = {
     id: data.id,
     firstName: data.firstName,
@@ -33,7 +32,21 @@ const getAllUser = async (req, res, next) => {
   next();
 };
 
+const getSingleUser = async (req, res, next) => {
+  const data = res.data || null;
+  const response = {
+    id: data.id,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    designationTitle: data.Designation[0].designationTitle,
+  };
+  res.data = response;
+  next();
+};
+
 module.exports = {
   createUser,
   getAllUser,
+  getSingleUser,
 };

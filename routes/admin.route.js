@@ -33,6 +33,7 @@ router.get(
   checkAccessToken,
   verifyAdmin,
   controllers.User.getSingleUser,
+  serializer.userSerializer.getSingleUser,
   genericResponse.sendResponse
 );
 
