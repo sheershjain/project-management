@@ -27,7 +27,23 @@ const updateTask = async (req, res, next) => {
   }
 };
 
+const deleteTask = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      taskId: params.taskId,
+    };
+    const { user } = req;
+    const data = await taskService.deleteTask(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
+  deleteTask,
 };

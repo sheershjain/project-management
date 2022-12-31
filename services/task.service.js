@@ -99,7 +99,45 @@ const updateTask = async (payload, user, paramsData) => {
   return "task updated successfully";
 };
 
+const deleteTask = async (user, paramsData) => {
+  const checkTask = await models.Task.findOne({
+    where: { id: paramsData.taskId },
+  });
+
+  if (!checkTask) {
+    throw new Error("Task not found");
+  }
+
+  const checkUser = await models.User.findOne({
+    where: { id: checkTask.userId },
+  });
+
+  const sprintId = checkTask.sprintId;
+  const checkSprint = await sprint(sprintId);
+
+  const loginUser = user.id;
+  const workspaceId = checkSprint.workspace_id;
+
+  const taskDeletedBy = await userInWorkspaceMapping(loginUser, workspaceId);
+  if (!taskDeletedBy) {
+    throw new Error("Access denied");
+  }
+
+  await models.Task.destroy({
+    where: { id: paramsData.taskId },
+  });
+
+  const body = `Your task has been deleted by -  ${user.email}`;
+  const subject = "Task Deleted";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
+  return "task deleted successfully";
+};
+
+
+
 module.exports = {
   createTask,
   updateTask,
+  deleteTask,
 };

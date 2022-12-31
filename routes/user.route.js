@@ -132,4 +132,11 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.delete(
+  "/task/:taskId",
+  checkAccessToken,
+  controllers.Task.deleteTask,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
