@@ -257,10 +257,10 @@ const removeUserWorkspace = async (payload, paramsData) => {
     },
   });
   const user = await models.User.findOne({
-    id: payload.userId,
+    where: { id: payload.userId },
   });
 
-  const body = `you are remove from  ${workspace.name}  workspace`;
+  const body = `you are remove from  ${checkWorkspace.name}  workspace`;
   const subject = "workspace";
   const recipient = user.email;
   mailer.sendMail(body, subject, recipient);
