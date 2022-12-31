@@ -51,9 +51,8 @@ router.get(
   checkAccessToken,
   verifyAdmin,
   controllers.Workspace.getAllWorkSpace,
+  serializer.workspaceSerializer.getAllWorkspace,
   genericResponse.sendResponse
 );
-
-
 
 module.exports = router;
