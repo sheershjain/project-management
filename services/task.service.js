@@ -1,8 +1,7 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
-const { sendMail } = require("../helper/send-mail.helper");
-const mailer = require("../helper/send-mail.helper");
+const mailer = require("../helper/mail.helper");
 const moment = require("moment");
 
 const sprint = async (sprintId) => {
@@ -57,7 +56,7 @@ const createTask = async (payload, user) => {
   const subject = "Your workspace Task";
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
-  return "assign task successfully";
+  return task;
 };
 
 const updateTask = async (payload, user) => {

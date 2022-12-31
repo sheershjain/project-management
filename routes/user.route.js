@@ -120,6 +120,7 @@ router.post(
   checkAccessToken,
   validator.taskValidator.createTaskSchema,
   controllers.Task.createTask,
+  serializer.taskSeralizer.createTask,
   genericResponse.sendResponse
 );
 
