@@ -18,7 +18,7 @@ module.exports = {
     const schema = Joi.object({
       name: Joi.string().min(2),
       description: Joi.string().min(5),
-      deadline: Joi.string().required(),
+      deadline: Joi.string(),
     });
 
     validateRequest(req, res, next, schema, "body");
