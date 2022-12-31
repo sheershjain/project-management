@@ -14,8 +14,12 @@ const createTask = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
   try {
+    const { params } = req;
+    const paramsData = {
+      taskId: params.taskId,
+    };
     const { body: payload, user } = req;
-    const data = await taskService.updateTask(payload, user);
+    const data = await taskService.updateTask(payload, user, paramsData);
     res.data = data;
     next();
   } catch (error) {

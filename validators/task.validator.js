@@ -14,4 +14,15 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
+
+  updateTaskSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      task: Joi.string().min(3),
+      description: Joi.string().min(5),
+      pointer: Joi.string(),
+      deadline: Joi.string().min(3),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
 };

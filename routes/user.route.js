@@ -125,9 +125,9 @@ router.post(
 );
 
 router.patch(
-  "/task",
+  "/task/:taskId",
   checkAccessToken,
-  //   validator.taskValidator.createTaskSchema,
+  validator.taskValidator.updateTaskSchema,
   controllers.Task.updateTask,
   genericResponse.sendResponse
 );

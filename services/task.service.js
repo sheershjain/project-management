@@ -11,7 +11,7 @@ const sprint = async (sprintId) => {
   return sprint;
 };
 
-const userInWorkspace = async (userId, workspaceId) => {
+const userInWorkspaceMapping = async (userId, workspaceId) => {
   const userWorkspaceMapping = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [{ user_id: userId }, { workspace_id: workspaceId }],
@@ -35,17 +35,17 @@ const createTask = async (payload, user) => {
   if (deadline <= currentTimeDateTime) {
     throw new Error("Invalid deadline");
   }
+  const loginUser = user.id;
+  const workspaceId = checkSprint.workspace_id;
 
-  const existingRelation = await models.UserWorkspaceMapping.findOne({
-    where: {
-      [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: checkSprint.workspace_id },
-      ],
-    },
-  });
+  const taskCreator = await userInWorkspaceMapping(loginUser, workspaceId);
+  if (!taskCreator) {
+    throw new Error("Access denied");
+  }
 
-  if (!existingRelation || !userInWorkspace) {
+  const assignTo = payload.userId;
+  const taskToUser = await userInWorkspaceMapping(assignTo, workspaceId);
+  if (!taskToUser) {
     throw new Error("User does not exist in workspace ");
   }
   payload.watch = [user.email];
@@ -59,38 +59,44 @@ const createTask = async (payload, user) => {
   return task;
 };
 
-const updateTask = async (payload, user) => {
+const updateTask = async (payload, user, paramsData) => {
   const checkTask = await models.Task.findOne({
-    where: { id: payload.taskId },
+    where: { id: paramsData.taskId },
   });
 
   if (!checkTask) {
     throw new Error("Task not found");
   }
-  const userInWorkspace = await models.UserWorkspaceMapping.findOne({
-    where: {
-      [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: checkSprint.workspace_id },
-      ],
-    },
-  });
 
-  if (!userInWorkspace) {
-    throw new Error("User does not exist in workspace ");
-  }
-  const findUser = await models.User.findOne({
+  const checkUser = await models.User.findOne({
     where: { id: checkTask.userId },
   });
+
+  const sprintId = checkTask.sprintId;
+  const checkSprint = await sprint(sprintId);
+
+  const currentTimeDateTime = moment().format("YYYY-MM-DD HH:mm:s");
+  const deadline = payload.deadline;
+  if (deadline <= currentTimeDateTime) {
+    throw new Error("Invalid deadline");
+  }
+  const loginUser = user.id;
+  const workspaceId = checkSprint.workspace_id;
+
+  const taskUpdatedBy = await userInWorkspaceMapping(loginUser, workspaceId);
+  if (!taskUpdatedBy) {
+    throw new Error("Access denied");
+  }
+
   await models.Task.update(payload, {
-    where: { id: taskId },
+    where: { id: paramsData.taskId },
   });
 
-  const body = `Your task has been updated by -  ${findUser.email}`;
-  const subject = "Your workspace Task";
+  const body = `Your task has been updated by -  ${user.email}`;
+  const subject = "Task Updated";
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
-  return payload;
+  return "task updated successfully";
 };
 
 module.exports = {
