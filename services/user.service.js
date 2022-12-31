@@ -3,7 +3,7 @@ const { sequelize } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
-const mailer = require("../helper/send-mail.helper");
+const mailer = require("../helper/mail.helper");
 const UniqueStringGenerator = require("unique-string-generator");
 const redisClient = require("../utility/redis");
 
@@ -129,11 +129,17 @@ const loginUser = async (payload) => {
 
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
-    process.env.SECRET_KEY_ACCESS
+    process.env.SECRET_KEY_ACCESS,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+    }
   );
   refreshToken = jwt.sign(
     { userId: user.dataValues.id },
-    process.env.SECRET_KEY_REFRESH
+    process.env.SECRET_KEY_REFRESH,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+    }
   );
 
   delete user.dataValues.password;

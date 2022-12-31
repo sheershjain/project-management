@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const controllers = require("../controllers");
-const { verifyAdmin, checkAccessToken } = require("../middlewares/auth");
+const { verifyAdmin, checkAccessToken } = require("../middlewares/auth.middleware");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
