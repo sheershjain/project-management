@@ -141,9 +141,28 @@ const myTask = async (user) => {
   return task;
 };
 
+const watch = async (user, paramsData) => {
+  const task = await models.Task.findOne({
+    where: { id: paramsData.taskId },
+  });
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  task.watch.push(user.email);
+  const watchedBy = task.watch;
+  await models.Task.update(
+    {
+      watch: watchedBy,
+    },
+    { where: { id: paramsData.taskId } }
+  );
+  return "you are added into task";
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   myTask,
+  watch,
 };

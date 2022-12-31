@@ -53,9 +53,25 @@ const myTask = async (req, res, next) => {
   }
 };
 
+const watch = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const { user } = req;
+    const paramsData = {
+      taskId: params.taskId,
+    };
+    const data = await taskService.watch(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
   myTask,
+  watch,
 };

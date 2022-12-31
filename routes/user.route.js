@@ -155,4 +155,12 @@ router.get(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/watch/:taskId",
+  checkAccessToken,
+  // validator.taskValidator.updateTaskSchema,
+  controllers.Task.watch,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
