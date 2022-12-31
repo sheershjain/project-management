@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const controllers = require("../controllers");
-const { checkAccessToken } = require("../middlewares/auth");
+const {
+  checkAccessToken,
+  checkRefreshToken,
+} = require("../middlewares/auth.middleware");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -31,6 +34,12 @@ router.patch(
   "/reset-password/:token",
   validator.userValidator.resetPasswordByLink,
   controllers.User.resetPasswordByLink,
+  genericResponse.sendResponse
+);
+router.get(
+  "/refresh-token",
+  checkRefreshToken,
+  controllers.User.refreshToken,
   genericResponse.sendResponse
 );
 

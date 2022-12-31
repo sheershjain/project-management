@@ -15,6 +15,11 @@ module.exports = (sequelize, Sequelize) => {
         sourceKey: "id",
         as: "User",
       });
+      this.hasMany(models.UserWorkspaceMapping, {
+        foreignKey: "designation_id",
+        targetKey: "id",
+        as: "Workspace",
+      });
     }
   }
   Designation.init(
