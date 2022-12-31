@@ -3,7 +3,7 @@ const { sequelize } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
-const mailer = require("../helper/send-mail.helper");
+const mailer = require("../helper/mail.helper");
 const UniqueStringGenerator = require("unique-string-generator");
 const redisClient = require("../utility/redis");
 
@@ -84,7 +84,7 @@ const createUser = async (payload) => {
     const subject = "project management registration";
     const recipient = payload.email;
     mailer.sendMail(body, subject, recipient);
-    return "user created successufully";
+    return payload;
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
@@ -134,6 +134,13 @@ const loginUser = async (payload) => {
   refreshToken = jwt.sign(
     { userId: user.dataValues.id },
     process.env.SECRET_KEY_REFRESH
+  );
+  refreshToken = jwt.sign(
+    { userId: user.dataValues.id },
+    process.env.SECRET_KEY_REFRESH,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+    }
   );
 
   delete user.dataValues.password;

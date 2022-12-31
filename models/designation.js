@@ -15,10 +15,9 @@ module.exports = (sequelize, Sequelize) => {
         sourceKey: "id",
         as: "User",
       });
-
-      this.belongsToMany(models.Workspace, {
-        through: models.UserWorkspaceMapping,
-        foreignKey: "user_id",
+      this.hasMany(models.UserWorkspaceMapping, {
+        foreignKey: "designation_id",
+        targetKey: "id",
         as: "Workspace",
       });
     }
