@@ -103,6 +103,7 @@ router.post(
   checkAccessToken,
   validator.sprintValidator.createSprintSchema,
   controllers.Sprint.createSprint,
+  serializer.sprintSerializer.createSprint,
   genericResponse.sendResponse
 );
 

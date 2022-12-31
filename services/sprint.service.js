@@ -10,17 +10,21 @@ const createSprint = async (payload, user) => {
   if (!checkWorkspace) {
     throw new Error("Workspace not found");
   }
+
   const currentTimeDateTime = moment().format("YYYY-MM-DD HH:mm:s");
   const deadline = payload.deadline;
   if (deadline <= currentTimeDateTime) {
     throw new Error("Invalid deadline");
   }
-  let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
+  const designation = await models.Designation.findOne({
+    where: { designationCode: 103 },
+  });
+  const isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
         { user_id: user.id },
         { workspace_id: payload.workspaceId },
-        { designation_id: "a1cb978e-48cf-47d6-9837-b26279f27fa7" },
+        { designation_id: designation.id },
       ],
     },
   });
@@ -28,9 +32,8 @@ const createSprint = async (payload, user) => {
     throw new Error("Access denied");
   }
 
-  await models.Sprint.create(payload);
-
-  return "sprint created successfully";
+  const sprint = await models.Sprint.create(payload);
+  return sprint;
 };
 
 const updateSprint = async (payload, user, paramsData) => {
@@ -40,13 +43,15 @@ const updateSprint = async (payload, user, paramsData) => {
   if (!checkSprint) {
     throw new Error("Sprint not found");
   }
-
+  const designation = await models.Designation.findOne({
+    where: { designationCode: 103 },
+  });
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
         { user_id: user.id },
         { workspace_id: checkSprint.dataValues.workspaceId },
-        { designation_id: "a1cb978e-48cf-47d6-9837-b26279f27fa7" },
+        { designation_id: designation.id },
       ],
     },
   });
@@ -54,7 +59,7 @@ const updateSprint = async (payload, user, paramsData) => {
     throw new Error("Access denied");
   }
 
-  await models.Sprint.update(payload, {
+  const sprint = await models.Sprint.update(payload, {
     where: { id: paramsData.sprintId },
   });
 
