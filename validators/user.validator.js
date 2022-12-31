@@ -31,7 +31,7 @@ module.exports = {
   resetPassword: async (req, res, next) => {
     const schema = Joi.object({
       oldPassword: Joi.string().required(),
-      newPassword: Joi.string().required(),
+      newPassword: Joi.string().min(5).required(),
     });
     validateRequest(req, res, next, schema, "body");
   },
@@ -45,7 +45,7 @@ module.exports = {
 
   resetPasswordByLink: async (req, res, next) => {
     const schema = Joi.object({
-      password: Joi.string().required(),
+      password: Joi.string().min(5).required(),
     });
     validateRequest(req, res, next, schema, "body");
   },

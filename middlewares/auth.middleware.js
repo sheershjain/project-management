@@ -34,6 +34,27 @@ const checkAccessToken = async (req, res, next) => {
   }
 };
 
+const checkRefreshToken = async (req, res, next) => {
+  try {
+    const header = req.headers["authorization"];
+    const refreshToken = header ? header.split(" ")[1] : null;
+    if (!refreshToken) {
+      throw new Error("Access denied");
+    }
+    const decodedJwt = jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH);
+    let userId = decodedJwt.userId;
+    let key = userId + "-refresh-token";
+    let cachedRefreshToken = await redisClient.get(key);
+    if (cachedRefreshToken !== refreshToken) throw new Error("Login Required");
+
+    req.body.userId = userId;
+    req.body.token = refreshToken;
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 const verifyAdmin = (req, res, next) => {
   try {
     if (req.user.Role[0].roleCode == 1001) {
@@ -62,4 +83,5 @@ module.exports = {
   checkAccessToken,
   verifyAdmin,
   verifyManager,
+  checkRefreshToken,
 };

@@ -1,7 +1,7 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
-const mailer = require("../helper/send-mail.helper");
+const mailer = require("../helper/mail.helper");
 
 const createWorkspace = async (payload, user) => {
   const trans = await sequelize.transaction();

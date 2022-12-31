@@ -3,7 +3,8 @@ const controllers = require("../controllers");
 const {
   verifyAdmin,
   checkAccessToken,
-} = require("../middlewares/auth");
+} = require("../middlewares/auth.middleware");
+const serializer = require("../serializers");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -14,6 +15,7 @@ router.post(
   verifyAdmin,
   validator.userValidator.createUserSchema,
   controllers.User.createUser,
+  serializer.userSerializer.createUser,
   genericResponse.sendResponse
 );
 
@@ -22,6 +24,7 @@ router.get(
   checkAccessToken,
   verifyAdmin,
   controllers.User.getAllUser,
+  serializer.userSerializer.getAllUser,
   genericResponse.sendResponse
 );
 
@@ -30,6 +33,7 @@ router.get(
   checkAccessToken,
   verifyAdmin,
   controllers.User.getSingleUser,
+  serializer.userSerializer.getSingleUser,
   genericResponse.sendResponse
 );
 
