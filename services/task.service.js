@@ -134,10 +134,17 @@ const deleteTask = async (user, paramsData) => {
   return "task deleted successfully";
 };
 
-
+const myTask = async (user) => {
+  console.log("-------------------->>>>>>");
+  const task = await models.Task.findAll({
+    where: { userId: user.id },
+  });
+  return task;
+};
 
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
+  myTask,
 };

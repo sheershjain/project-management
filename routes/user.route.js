@@ -98,6 +98,14 @@ router.delete(
   genericResponse.sendResponse
 );
 
+router.get(
+  "/workspace",
+  checkAccessToken,
+  controllers.Workspace.myWorkspace,
+  serializer.workspaceSerializer.getAllWorkspace,
+  genericResponse.sendResponse
+);
+
 router.post(
   "/sprint",
   checkAccessToken,
@@ -136,6 +144,14 @@ router.delete(
   "/task/:taskId",
   checkAccessToken,
   controllers.Task.deleteTask,
+  genericResponse.sendResponse
+);
+
+router.get(
+  "/task",
+  checkAccessToken,
+  controllers.Task.myTask,
+  serializer.taskSeralizer.getMyTask,
   genericResponse.sendResponse
 );
 

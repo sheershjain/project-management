@@ -42,8 +42,20 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
+const myTask = async (req, res, next) => {
+  try {
+    const { user } = req;
+    const data = await taskService.myTask(user);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
   deleteTask,
+  myTask,
 };

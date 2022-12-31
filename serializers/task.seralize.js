@@ -13,6 +13,24 @@ const createTask = async (req, res, next) => {
   next();
 };
 
+const getMyTask = async (req, res, next) => {
+  const data = res.data || null;
+  const serializedData = [];
+  data.forEach((item) => {
+    const user = {
+      id: item.dataValues.id,
+      task: item.dataValues.task,
+      description: item.dataValues.description,
+      pointer: item.dataValues.pointer,
+      deadline: item.dataValues.deadline,
+    };
+    serializedData.push(user);
+  });
+  res.data = serializedData;
+  next();
+};
+
 module.exports = {
   createTask,
+  getMyTask,
 };
