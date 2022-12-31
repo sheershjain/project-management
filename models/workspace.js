@@ -22,11 +22,11 @@ module.exports = (sequelize, Sequelize) => {
         as: "User",
       });
 
-      this.belongsToMany(models.Designation, {
-        through: models.UserWorkspaceMapping,
-        foreignKey: "designation_id",
-        as: "Designation",
-      });
+      // this.belongsTo(models.Designation, {
+      //   through: models.UserWorkspaceMapping,
+      //   foreignKey: "designation_id",
+      //   as: "Designation",
+      // });
     }
   }
   Workspace.init(

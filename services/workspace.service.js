@@ -1,6 +1,7 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
+const mailer = require("../helper/send-mail.helper");
 
 const createWorkspace = async (payload, user) => {
   const trans = await sequelize.transaction();
@@ -18,7 +19,7 @@ const createWorkspace = async (payload, user) => {
     const workspaceData = {
       user_id: userId,
       workspace_id: workspaceId,
-      designation_id: "c68d5252-ebc5-4a2b-a452-37c00cd55a1c",
+      designation_id: user.Designation[0].dataValues.id,
     };
 
     const userWorkspaceMapping = await models.UserWorkspaceMapping.create(
@@ -31,7 +32,7 @@ const createWorkspace = async (payload, user) => {
       throw new Error("Something went wrong");
     }
     await trans.commit();
-    return "workspace created";
+    return workspace;
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
@@ -40,23 +41,21 @@ const createWorkspace = async (payload, user) => {
 };
 
 const addUserInWorkspace = async (payload) => {
-  const user = await models.User.findOne({
-    id: payload.userId,
-  });
-
-  if (!user) {
-    throw new Error("User Not Found");
-  }
-
   const workspace = await models.Workspace.findOne({
-    id: payload.workspaceId,
+    where: { id: payload.workspaceId },
   });
 
   if (!workspace) {
     throw new Error("Workspace Not Found");
   }
 
-  let existingRelation = await models.UserWorkspaceMapping.findOne({
+  const user = await models.User.findOne({
+    where: { id: payload.userId },
+  });
+  if (!user) {
+    throw new Error("User Not Found");
+  }
+  const existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
         { user_id: payload.userId },
@@ -72,7 +71,7 @@ const addUserInWorkspace = async (payload) => {
   let userWorkspaceData = {
     user_id: payload.userId,
     workspace_id: payload.workspaceId,
-    designation_id: "98ee802b-bbbb-49f4-b2ff-7695a480513b",
+    designation_id: payload.designationId,
   };
   await models.UserWorkspaceMapping.create(userWorkspaceData);
   const body = `you are added into  ${workspace.name}  workspace`;
@@ -86,9 +85,15 @@ const getAllWorkSpace = async (query) => {
   let limit = query.page == 0 ? null : query.limit;
   let page = query.page < 2 ? 0 : query.page;
 
-  const workspace = await models.Workspace.findAll({
+  const workspace = await models.UserWorkspaceMapping.findAll({
     attributes: {
-      exclude: ["created_at", "updated_at", "deleted_at"],
+      exclude: [
+        "created_at",
+        "user_id",
+        "designation_id",
+        "updated_at",
+        "deleted_at",
+      ],
     },
     include: [
       {
@@ -102,8 +107,8 @@ const getAllWorkSpace = async (query) => {
         attributes: ["email"],
       },
     ],
-    // limit: limit,
-    // offset: page * 3,
+    limit: limit,
+    offset: page * 3,
   });
   return workspace;
 };
@@ -130,24 +135,13 @@ const updateWorkspace = async (payload, user, paramsData) => {
     throw new Error("Access denied");
   }
 
-  const workspace = await models.Workspace.update(
-    {
-      description: payload.description,
-    },
-    { where: { id: paramsData.workspaceId } }
-  );
+  const workspace = await models.Workspace.update(payload, {
+    where: { id: paramsData.workspaceId },
+  });
   return "workspace description updated successfully";
 };
 
 const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
-  const checkUser = await models.User.findOne({
-    where: { id: payload.userId },
-  });
-
-  if (!checkUser) {
-    throw new Error("User not found");
-  }
-
   const checkWorkspace = await models.Workspace.findOne({
     where: { id: paramsData.workspaceId },
   });
@@ -155,6 +149,21 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   if (!checkWorkspace) {
     throw new Error("Workspace not found");
   }
+  const userInWorkspace = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: payload.userId },
+        { workspace_id: paramsData.workspaceId },
+      ],
+    },
+  });
+
+  if (!userInWorkspace) {
+    throw new Error("User does not exist in workspace ");
+  }
+  const checkUser = await models.User.findOne({
+    where: { id: payload.userId },
+  });
 
   let existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
@@ -182,6 +191,10 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
       },
     }
   );
+  const body = `your designation has been updated into  ${checkWorkspace.name}  workspace`;
+  const subject = "update designation";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
 
   return payload;
 };

@@ -16,11 +16,17 @@ module.exports = (sequelize, Sequelize) => {
         as: "User",
       });
 
-      this.belongsToMany(models.Workspace, {
-        through: models.UserWorkspaceMapping,
-        foreignKey: "user_id",
+      this.hasMany(models.UserWorkspaceMapping, {
+        foreignKey: "designation_id",
+        targetKey: "id",
         as: "Workspace",
       });
+
+      // this.belongsToMany(models.Workspace, {
+      //   through: models.UserWorkspaceMapping,
+      //   foreignKey: "user_id",
+      //   as: "Workspace",
+      // });
     }
   }
   Designation.init(
