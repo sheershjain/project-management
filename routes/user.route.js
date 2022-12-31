@@ -5,6 +5,7 @@ const {
   checkRefreshToken,
   verifyManager,
 } = require("../middlewares/auth.middleware");
+const serializer = require("../serializers");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -94,6 +95,14 @@ router.delete(
   verifyManager,
   validator.workspaceValidator.removeUserWorkspaceSchema,
   controllers.Workspace.removeUserWorkspace,
+  genericResponse.sendResponse
+);
+
+router.get(
+  "/workspace",
+  checkAccessToken,
+  controllers.Workspace.myWorkspace,
+  serializer.workspaceSerializer.getAllWorkspace,
   genericResponse.sendResponse
 );
 

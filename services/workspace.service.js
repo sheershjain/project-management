@@ -267,6 +267,25 @@ const removeUserWorkspace = async (payload, paramsData) => {
   return "User remove successfully";
 };
 
+const myWorkspace = async (user) => {
+  const workspace = await models.UserWorkspaceMapping.findAll({
+    where: { user_id: user.id },
+    include: [
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
+      {
+        model: models.User,
+        as: "User",
+        attributes: ["email"],
+      },
+    ],
+  });
+  return workspace;
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -275,4 +294,5 @@ module.exports = {
   updateUserDesignationInWorkspace,
   deactivateWorkspace,
   removeUserWorkspace,
+  myWorkspace,
 };
