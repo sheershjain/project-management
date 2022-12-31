@@ -135,7 +135,6 @@ const deleteTask = async (user, paramsData) => {
 };
 
 const myTask = async (user) => {
-  console.log("-------------------->>>>>>");
   const task = await models.Task.findAll({
     where: { userId: user.id },
   });
