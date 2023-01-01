@@ -270,6 +270,22 @@ const refreshToken = async (payload) => {
   };
 };
 
+const deactivateUser = async (paramsData) => {
+  const user = await models.User.findOne({
+    where: { id: paramsData.userId },
+  });
+
+  if (!user) {
+    throw new Error("User Not Found!");
+  }
+
+  await models.User.destroy({
+    where: { id: paramsData.userId },
+  });
+
+  return "user deactivated successfully";
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -279,4 +295,5 @@ module.exports = {
   forgetPassword,
   refreshToken,
   resetPasswordByLink,
+  deactivateUser,
 };
