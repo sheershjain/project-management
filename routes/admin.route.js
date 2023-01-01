@@ -36,9 +36,16 @@ router.get(
   serializer.userSerializer.getSingleUser,
   genericResponse.sendResponse
 );
+router.delete(
+  "/user/:userId",
+  checkAccessToken,
+  verifyAdmin,
+  controllers.User.deactivateUser,
+  genericResponse.sendResponse
+);
 
 router.patch(
-  "/designation",
+  "/designation/:userId",
   checkAccessToken,
   verifyAdmin,
   validator.designationValidator.designationSchema,
