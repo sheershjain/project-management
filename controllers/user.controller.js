@@ -97,6 +97,20 @@ const resetPasswordByLink = async (req, res, next) => {
   }
 };
 
+const deactivateUser = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      userId: params.userId,
+    };
+    const data = await userService.deactivateUser(paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -106,4 +120,5 @@ module.exports = {
   forgetPassword,
   refreshToken,
   resetPasswordByLink,
+  deactivateUser,
 };
