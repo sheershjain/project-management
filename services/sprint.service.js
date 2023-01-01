@@ -67,14 +67,14 @@ const updateSprint = async (payload, user, paramsData) => {
 };
 
 const deleteSprint = async (user, paramsData) => {
+  const checkSprint = await models.Sprint.findOne({
+    where: { id: paramsData.sprintId },
+  });
+  if (!checkSprint) {
+    throw new Error("Sprint not found");
+  }
   const trans = await sequelize.transaction();
   try {
-    const checkSprint = await models.Sprint.findOne({
-      where: { id: paramsData.sprintId },
-    });
-    if (!checkSprint) {
-      throw new Error("Sprint not found");
-    }
     const designation = await models.Designation.findOne({
       where: { designationCode: 103 },
     });
