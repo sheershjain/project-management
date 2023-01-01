@@ -66,7 +66,56 @@ const updateSprint = async (payload, user, paramsData) => {
   return "sprint updated successfully";
 };
 
+const deleteSprint = async (user, paramsData) => {
+  const trans = await sequelize.transaction();
+  try {
+    const checkSprint = await models.Sprint.findOne({
+      where: { id: paramsData.sprintId },
+    });
+    if (!checkSprint) {
+      throw new Error("Sprint not found");
+    }
+    const designation = await models.Designation.findOne({
+      where: { designationCode: 103 },
+    });
+    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
+      where: {
+        [Op.and]: [
+          { user_id: user.id },
+          { workspace_id: checkSprint.dataValues.workspaceId },
+          { designation_id: designation.id },
+        ],
+      },
+    });
+
+    if (!isLeadWorkspace) {
+      throw new Error("Access denied");
+    }
+    const task = await models.Task.destroy(
+      {
+        where: { sprintId: paramsData.sprintId },
+      },
+      { transaction: trans }
+    );
+
+    const sprint = await models.Sprint.destroy(
+      {
+        where: { id: paramsData.sprintId },
+      },
+      { transaction: trans }
+    );
+
+    await trans.commit();
+    return "sprint deleted successfully";
+  } catch (error) {
+    await trans.rollback();
+    console.log(error.message);
+    return { data: null, error: error };
+  }
+};
+
 module.exports = {
   createSprint,
   updateSprint,
+  deleteSprint,
 };

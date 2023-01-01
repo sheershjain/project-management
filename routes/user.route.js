@@ -115,4 +115,11 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.delete(
+  "/sprint/:sprintId",
+  checkAccessToken,
+  controllers.Sprint.deleteSprint,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
