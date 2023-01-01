@@ -114,8 +114,29 @@ const deleteSprint = async (user, paramsData) => {
   }
 };
 
+const mySprint = async (user, paramsData) => {
+  const checkWorkspace = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: user.id },
+        { workspace_id: paramsData.workspaceId },
+      ],
+    },
+  });
+
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+
+  const sprint = await models.Sprint.findAll({
+    where: { workspaceId: checkWorkspace.workspace_id },
+  });
+  return sprint;
+};
+
 module.exports = {
   createSprint,
   updateSprint,
   deleteSprint,
+  mySprint,
 };

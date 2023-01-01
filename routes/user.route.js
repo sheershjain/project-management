@@ -122,4 +122,12 @@ router.delete(
   genericResponse.sendResponse
 );
 
+router.get(
+  "/sprint/:workspaceId",
+  checkAccessToken,
+  controllers.Sprint.mySprint,
+  serializer.sprintSerializer.getMySprint,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
