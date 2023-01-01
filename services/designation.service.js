@@ -1,16 +1,28 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 
-const updateDesignation = async (payload) => {
-  const findUser = await models.User.findOne({
-    where: { id: payload.userId },
+const updateDesignation = async (payload, paramsData) => {
+  const user = await models.User.findOne({
+    where: { id: paramsData.userId },
   });
 
-  if (!findUser) {
+  if (!user) {
     throw new Error("user not found");
   }
+
+  const findDesignation = await models.Designation.findOne({
+    where: { id: payload.designationId },
+  });
+
+  if (!findDesignation) {
+    throw new Error("Designation not found");
+  }
+
   const checkDesignation = await models.UserDesignationMapping.findOne({
-    where: { user_id: payload.userId, designation_id: payload.designationId },
+    where: {
+      user_id: paramsData.userId,
+      designation_id: payload.designationId,
+    },
   });
 
   if (checkDesignation) {
@@ -21,10 +33,10 @@ const updateDesignation = async (payload) => {
     {
       designation_id: payload.designationId,
     },
-    { where: { user_id: payload.userId } }
+    { where: { user_id: paramsData.userId } }
   );
 
-  return payload;
+  return "User designation updated successfully";
 };
 
 module.exports = {

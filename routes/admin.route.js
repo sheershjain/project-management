@@ -38,7 +38,7 @@ router.get(
 );
 
 router.patch(
-  "/designation",
+  "/designation/:userId",
   checkAccessToken,
   verifyAdmin,
   validator.designationValidator.designationSchema,

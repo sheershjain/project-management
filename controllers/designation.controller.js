@@ -4,7 +4,14 @@ const designationService = require("../services/designation.service");
 const updateDesignation = async (req, res, next) => {
   try {
     const { body: payload } = req;
-    const data = await designationService.updateDesignation(payload);
+    const { params } = req;
+    const paramsData = {
+      userId: params.userId,
+    };
+    const data = await designationService.updateDesignation(
+      payload,
+      paramsData
+    );
     res.data = data;
     next();
   } catch (error) {
