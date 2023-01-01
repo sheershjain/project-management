@@ -178,4 +178,11 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/approve/:taskId",
+  checkAccessToken,
+  controllers.Task.approveTask,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

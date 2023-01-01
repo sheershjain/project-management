@@ -214,6 +214,55 @@ const taskStatus = async (payload, user, paramsData) => {
   return "status updated successfully";
 };
 
+const approveTask = async (user, paramsData) => {
+  const task = await models.Task.findOne({
+    where: {
+      id: paramsData.taskId,
+    },
+  });
+  const checkUser = await models.User.findOne({
+    where: { id: task.userId },
+  });
+
+  const leadDesignation = await models.Designation.findOne({
+    where: { designationCode: 103 },
+  });
+  const sprintId = task.sprintId;
+  const checkSprint = await sprint(sprintId);
+  const workspaceLead = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { user_id: user.id },
+        { workspace_id: checkSprint.workspaceId },
+        { designation_id: leadDesignation.id },
+      ],
+    },
+  });
+  if (!workspaceLead) {
+    throw new Error("Access denied");
+  }
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  if (task.status == "approved") {
+    throw new Error("Task is already approved");
+  }
+
+  const status = await models.Task.update(
+    {
+      status: "approved",
+    },
+    { where: { id: paramsData.taskId } }
+  );
+  const body = `Your Task is approved -  ${paramsData.taskId}`;
+  const subject = "Approve Task ";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
+  return "Task approved";
+};
+
 module.exports = {
   createTask,
   updateTask,
@@ -222,4 +271,5 @@ module.exports = {
   watch,
   addTaskComment,
   taskStatus,
+  approveTask,
 };

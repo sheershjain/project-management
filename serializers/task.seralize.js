@@ -23,6 +23,7 @@ const getMyTask = async (req, res, next) => {
       description: item.dataValues.description,
       pointer: item.dataValues.pointer,
       deadline: item.dataValues.deadline,
+      status: item.dataValues.status,
       watchedBy: item.dataValues.watch,
     };
     serializedData.push(user);
