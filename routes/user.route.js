@@ -170,5 +170,12 @@ router.post(
   serializer.taskSeralizer.addTaskComment,
   genericResponse.sendResponse
 );
+router.patch(
+  "/status/:taskId",
+  checkAccessToken,
+  validator.taskValidator.taskStatus,
+  controllers.Task.taskStatus,
+  genericResponse.sendResponse
+);
 
 module.exports = router;

@@ -31,11 +31,7 @@ const createTask = async (payload, user) => {
   const checkUser = await models.User.findOne({
     where: { id: payload.userId },
   });
-  const currentTimeDateTime = moment().format("YYYY-MM-DD HH:mm:s");
-  const deadline = payload.deadline;
-  if (deadline <= currentTimeDateTime) {
-    throw new Error("Invalid deadline");
-  }
+
   const loginUser = user.id;
   const workspaceId = checkSprint.workspace_id;
 
@@ -48,6 +44,12 @@ const createTask = async (payload, user) => {
   const taskToUser = await userInWorkspaceMapping(assignTo, workspaceId);
   if (!taskToUser) {
     throw new Error("User does not exist in workspace ");
+  }
+
+  const currentTimeDateTime = moment().format("YYYY-MM-DD HH:mm:s");
+  const deadline = payload.deadline;
+  if (deadline <= currentTimeDateTime) {
+    throw new Error("Invalid deadline");
   }
   payload.watch = [user.email];
   payload.status = "pending";
@@ -173,6 +175,45 @@ const addTaskComment = async (payload, user) => {
   return taskComment;
 };
 
+const taskStatus = async (payload, user, paramsData) => {
+  const task = await models.Task.findOne({
+    where: {
+      [Op.and]: [{ id: paramsData.taskId }, { userId: user.id }],
+    },
+  });
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  const leadDesignation = await models.Designation.findOne({
+    where: { designationCode: 103 },
+  });
+  const sprintId = task.sprintId;
+  const checkSprint = await sprint(sprintId);
+  const workspaceLead = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { workspace_id: checkSprint.workspaceId },
+        { designation_id: leadDesignation.id },
+      ],
+    },
+  });
+  const leadInfo = await models.User.findOne({
+    where: { id: workspaceLead.user_id },
+  });
+
+  const status = await models.Task.update(payload, {
+    where: { id: paramsData.taskId },
+  });
+  if (payload.status == "done") {
+    const body = `Please approve this task -  ${paramsData.taskId}`;
+    const subject = "Approve Task ";
+    const recipient = leadInfo.email;
+    mailer.sendMail(body, subject, recipient);
+  }
+
+  return "status updated successfully";
+};
+
 module.exports = {
   createTask,
   updateTask,
@@ -180,4 +221,5 @@ module.exports = {
   myTask,
   watch,
   addTaskComment,
+  taskStatus,
 };

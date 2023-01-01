@@ -33,4 +33,12 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
+
+  taskStatus: async (req, res, next) => {
+    const schema = Joi.object({
+      status: Joi.string().valid("Inprogress", "done").required(),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
 };
