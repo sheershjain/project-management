@@ -173,6 +173,13 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
     where: { id: payload.userId },
   });
 
+  const designation = await models.Designation.findOne({
+    where: { id: payload.designationId },
+  });
+  if (!designation) {
+    throw new Error("Designation Not Found");
+  }
+
   let existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
