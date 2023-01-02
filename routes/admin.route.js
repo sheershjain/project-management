@@ -5,7 +5,7 @@ const {
   checkAccessToken,
 } = require("../middlewares/auth.middleware");
 const userSerializer = require("../serializers/user.serializer");
-const genericResponse = require("../helper/generic-response.helper");
+const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
 const router = Router();
 
