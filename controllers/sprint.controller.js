@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const sprintService = require("../services/sprint.service");
 
 const createSprint = async (req, res, next) => {

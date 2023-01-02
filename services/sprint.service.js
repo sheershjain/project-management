@@ -16,9 +16,9 @@ const createSprint = async (payload, user) => {
   const isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: payload.workspaceId },
-        { designation_id: designation.id },
+        { userId: user.id },
+        { workspaceId: payload.workspaceId },
+        { designationId: designation.id },
       ],
     },
   });
@@ -49,9 +49,9 @@ const updateSprint = async (payload, user, paramsData) => {
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: checkSprint.dataValues.workspaceId },
-        { designation_id: designation.id },
+        { userId: user.id },
+        { workspaceId: checkSprint.dataValues.workspaceId },
+        { designationId: designation.id },
       ],
     },
   });
@@ -79,9 +79,9 @@ const archiveSprint = async (user, paramsData) => {
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: checkSprint.dataValues.workspaceId },
-        { designation_id: designation.id },
+        { userId: user.id },
+        { workspaceId: checkSprint.dataValues.workspaceId },
+        { designationId: designation.id },
       ],
     },
   });
@@ -118,8 +118,8 @@ const mySprint = async (user, paramsData) => {
   const checkWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: paramsData.workspaceId },
+        { userId: user.id },
+        { workspaceId: paramsData.workspaceId },
       ],
     },
   });
@@ -129,7 +129,7 @@ const mySprint = async (user, paramsData) => {
   }
 
   const sprint = await models.Sprint.findAll({
-    where: { workspaceId: checkWorkspace.workspace_id },
+    where: { workspaceId: checkWorkspace.workspaceId },
   });
   return sprint;
 };
@@ -160,9 +160,9 @@ const openSprint = async (user, paramsData) => {
       {
         where: {
           [Op.and]: [
-            { user_id: user.id },
-            { workspace_id: checkSprint.dataValues.workspaceId },
-            { designation_id: designation.id },
+            { userId: user.id },
+            { workspaceId: checkSprint.dataValues.workspaceId },
+            { designationId: designation.id },
           ],
         },
       },
