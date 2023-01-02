@@ -1,21 +1,23 @@
 const { Router } = require("express");
-const controllers = require("../controllers");
+const userController = require("../controllers/user.controller");
+const designationController = require("../controllers/designation.controller");
 const {
   verifyAdmin,
   checkAccessToken,
 } = require("../middlewares/auth.middleware");
-const serializer = require("../serializers");
-const genericResponse = require("../helper/generic-response.helper");
-const validator = require("../validators");
+const userSerializer = require("../serializers/user.serializer");
+const genericResponse = require("../helpers/generic-response.helper");
+const userValidator = require("../validators/user.validator");
+const designationValidator = require("../validators/designation.validator");
 const router = Router();
 
 router.post(
   "/user",
   checkAccessToken,
   verifyAdmin,
-  validator.userValidator.createUserSchema,
-  controllers.User.createUser,
-  serializer.userSerializer.createUser,
+  userValidator.createUserSchema,
+  userController.createUser,
+  userSerializer.createUser,
   genericResponse.sendResponse
 );
 
@@ -23,8 +25,8 @@ router.get(
   "/users",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.getAllUser,
-  serializer.userSerializer.getAllUser,
+  userController.getAllUser,
+  userSerializer.getAllUser,
   genericResponse.sendResponse
 );
 
@@ -32,15 +34,15 @@ router.get(
   "/user/:userId",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.getSingleUser,
-  serializer.userSerializer.getSingleUser,
+  userController.getSingleUser,
+  userSerializer.getSingleUser,
   genericResponse.sendResponse
 );
 router.delete(
   "/user/:userId",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.deactivateUser,
+  userController.deactivateUser,
   genericResponse.sendResponse
 );
 
@@ -48,8 +50,8 @@ router.patch(
   "/designation/:userId",
   checkAccessToken,
   verifyAdmin,
-  validator.designationValidator.designationSchema,
-  controllers.Designation.updateDesignation,
+  designationValidator.designationSchema,
+  designationController.updateDesignation,
   genericResponse.sendResponse
 );
 

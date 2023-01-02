@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const designationService = require("../services/designation.service");
 
 const updateDesignation = async (req, res, next) => {

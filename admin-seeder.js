@@ -67,8 +67,8 @@ async function admin() {
 
         await models.UserDesignationMapping.create(
           {
-            user_id: userId,
-            designation_id: designation.id,
+            userId: userId,
+            designationId: designation.id,
           },
           { transaction: t }
         );
@@ -84,8 +84,8 @@ async function admin() {
 
         await models.UserRoleMapping.create(
           {
-            role_id: role.id,
-            user_id: userId,
+            roleId: role.id,
+            userId: userId,
           },
           { transaction: t }
         );

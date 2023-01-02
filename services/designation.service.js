@@ -20,8 +20,8 @@ const updateDesignation = async (payload, paramsData) => {
 
   const checkDesignation = await models.UserDesignationMapping.findOne({
     where: {
-      user_id: paramsData.userId,
-      designation_id: payload.designationId,
+      userId: paramsData.userId,
+      designationId: payload.designationId,
     },
   });
 
@@ -31,9 +31,9 @@ const updateDesignation = async (payload, paramsData) => {
 
   const designation = await models.UserDesignationMapping.update(
     {
-      designation_id: payload.designationId,
+      designationId: payload.designationId,
     },
-    { where: { user_id: paramsData.userId } }
+    { where: { userId: paramsData.userId } }
   );
 
   return "User designation updated successfully";
