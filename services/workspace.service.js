@@ -55,6 +55,12 @@ const addUserInWorkspace = async (payload) => {
   if (!user) {
     throw new Error("User Not Found");
   }
+  const designation = await models.Designation.findOne({
+    where: { id: payload.designationId },
+  });
+  if (!designation) {
+    throw new Error("Designation Not Found");
+  }
   const existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
@@ -73,12 +79,14 @@ const addUserInWorkspace = async (payload) => {
     workspace_id: payload.workspaceId,
     designation_id: payload.designationId,
   };
-  await models.UserWorkspaceMapping.create(userWorkspaceData);
+  const addInWorkspace = await models.UserWorkspaceMapping.create(
+    userWorkspaceData
+  );
   const body = `you are added into  ${workspace.name}  workspace`;
   const subject = "workspace";
   const recipient = user.email;
   mailer.sendMail(body, subject, recipient);
-  return payload;
+  return addInWorkspace;
 };
 
 const getAllWorkSpace = async (query) => {

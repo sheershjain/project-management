@@ -51,6 +51,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.addUserWorkspaceSchema,
   controllers.Workspace.addUserInWorkspace,
+  serializer.workspaceSerializer.addUserInWorkspace,
   genericResponse.sendResponse
 );
 
