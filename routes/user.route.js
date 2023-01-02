@@ -60,6 +60,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.workspaceSchema,
   controllers.Workspace.createWorkspace,
+  serializer.workspaceSerializer.createWorkspace,
   genericResponse.sendResponse
 );
 

@@ -13,6 +13,18 @@ const getAllWorkspace = async (req, res, next) => {
   next();
 };
 
+const createWorkspace = async (req, res, next) => {
+  const data = res.data || null;
+  const response = {
+    id: data.id,
+    name: data.name,
+    description: data.description,
+  };
+  res.data = response;
+  next();
+};
+
 module.exports = {
   getAllWorkspace,
+  createWorkspace,
 };
