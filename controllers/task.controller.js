@@ -27,14 +27,14 @@ const updateTask = async (req, res, next) => {
   }
 };
 
-const deleteTask = async (req, res, next) => {
+const archiveTask = async (req, res, next) => {
   try {
     const { params } = req;
     const paramsData = {
       taskId: params.taskId,
     };
     const { user } = req;
-    const data = await taskService.deleteTask(user, paramsData);
+    const data = await taskService.archiveTask(user, paramsData);
     res.data = data;
     next();
   } catch (error) {
@@ -109,13 +109,29 @@ const approveTask = async (req, res, next) => {
   }
 };
 
+const openTask = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      taskId: params.taskId,
+    };
+    const { user } = req;
+    const data = await taskService.openTask(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
-  deleteTask,
+  archiveTask,
   myTask,
   watch,
   addTaskComment,
   taskStatus,
   approveTask,
+  openTask,
 };

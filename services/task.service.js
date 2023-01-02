@@ -102,7 +102,7 @@ const updateTask = async (payload, user, paramsData) => {
   return "task updated successfully";
 };
 
-const deleteTask = async (user, paramsData) => {
+const archiveTask = async (user, paramsData) => {
   const checkTask = await models.Task.findOne({
     where: { id: paramsData.taskId },
   });
@@ -263,13 +263,45 @@ const approveTask = async (user, paramsData) => {
   return "Task approved";
 };
 
+const openTask = async (user, paramsData) => {
+  const findTask = async (taskId) => {
+    const findTask = await models.Task.findOne({
+      where: { id: taskId },
+    });
+    return findTask;
+  };
+
+  const isTask = await findTask(paramsData.taskId);
+  if (isTask) {
+    throw new Error("Task is already open");
+  }
+
+  const openTask = await models.Task.restore({
+    where: { id: paramsData.taskId },
+  });
+
+  if (!openTask) {
+    throw new Error("Task not found");
+  }
+  const checkTask = await findTask(paramsData.taskId);
+  const checkUser = await models.User.findOne({
+    where: { id: checkTask.userId },
+  });
+  const body = `Your task (${paramsData.taskId}) has been opend by -  ${user.email}`;
+  const subject = "Task Opened";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
+  return "task opened successfully";
+};
+
 module.exports = {
   createTask,
   updateTask,
-  deleteTask,
+  archiveTask,
   myTask,
   watch,
   addTaskComment,
   taskStatus,
   approveTask,
+  openTask,
 };

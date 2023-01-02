@@ -142,9 +142,9 @@ router.patch(
 );
 
 router.delete(
-  "/task/:taskId",
+  "/archive/:taskId",
   checkAccessToken,
-  controllers.Task.deleteTask,
+  controllers.Task.archiveTask,
   genericResponse.sendResponse
 );
 router.delete(
@@ -191,10 +191,18 @@ router.patch(
   controllers.Task.approveTask,
   genericResponse.sendResponse
 );
- router.get("/sprint/:workspaceId",
+router.get(
+  "/sprint/:workspaceId",
   checkAccessToken,
   controllers.Sprint.mySprint,
   serializer.sprintSerializer.getMySprint,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open/:taskId",
+  checkAccessToken,
+  controllers.Task.openTask,
   genericResponse.sendResponse
 );
 
