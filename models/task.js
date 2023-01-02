@@ -10,26 +10,27 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.hasMany(models.TaskComment, {
-        foreignKey: "task_id",
+        foreignKey: "taskId",
         sourceKey: "id",
         as: "TaskComment",
       });
 
       this.hasMany(models.Tag, {
-        foreignKey: "task_id",
+        foreignKey: "taskId",
         sourceKey: "id",
         as: "Tag",
       });
 
       this.belongsTo(models.Sprint, {
-        foreignKey: "sprint_id",
+        foreignKey: "sprintId",
         targetKey: "id",
         as: "Sprint",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         targetKey: "id",
+        as: 'User'
       });
     }
   }

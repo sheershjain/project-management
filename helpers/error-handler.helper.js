@@ -1,7 +1,13 @@
-const fs = require('fs');
+const fs = require("fs");
 
-const commonErrorHandler = async (req, res, message, statusCode = 500, error = null) => {
-  let errorMessage = 'Something went wrong. Please try again';
+const commonErrorHandler = async (
+  req,
+  res,
+  message,
+  statusCode = 500,
+  error = null
+) => {
+  let errorMessage = "Something went wrong. Please try again";
   if (message) {
     errorMessage = message;
   }
@@ -14,13 +20,12 @@ const commonErrorHandler = async (req, res, message, statusCode = 500, error = n
   const response = {
     statusCode,
     data: {},
-    message: errorMessage
+    message: errorMessage,
   };
 
   res.status(statusCode).json(response);
 };
 
-
 module.exports = {
-  commonErrorHandler
+  commonErrorHandler,
 };

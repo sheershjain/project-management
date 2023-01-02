@@ -3,7 +3,7 @@ const { sequelize } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
-const mailer = require("../helper/mail.helper");
+const mailer = require("../helpers/mail.helper");
 const UniqueStringGenerator = require("unique-string-generator");
 const redisClient = require("../utility/redis");
 
@@ -33,7 +33,7 @@ const createUser = async (payload) => {
       const designation = await models.Designation.findOne(
         {
           where: {
-            designation_code: payload.designationCode,
+            designationCode: payload.designationCode,
           },
         },
         { transaction: trans }
@@ -45,8 +45,8 @@ const createUser = async (payload) => {
       const designationUserMappingDesignationID =
         await models.UserDesignationMapping.create(
           {
-            designation_id: designation.dataValues.id,
-            user_id: userId,
+            designationId: designation.dataValues.id,
+            userId: userId,
           },
           { transaction: trans }
         );
@@ -58,7 +58,7 @@ const createUser = async (payload) => {
       const role = await models.Role.findOne(
         {
           where: {
-            role_key: payload.roleKey,
+            roleKey: payload.roleKey,
           },
         },
         { transaction: trans }
@@ -69,8 +69,8 @@ const createUser = async (payload) => {
       }
       const userRoleMapping = await models.UserRoleMapping.create(
         {
-          user_id: userId,
-          role_id: role.id,
+          userId: userId,
+          roleId: role.id,
         },
         { transaction: trans }
       );
@@ -122,11 +122,6 @@ const loginUser = async (payload) => {
     );
   }
 
-  const match = await bcrypt.compare(password, user.dataValues.password);
-  if (!match) {
-    throw new Error("Wrong credentials");
-  }
-
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
     process.env.SECRET_KEY_ACCESS,
@@ -175,7 +170,7 @@ const getAllUser = async (query) => {
 };
 
 const getSingleUser = async (query) => {
-  let user = await models.User.findOne({
+  const user = await models.User.findOne({
     where: { id: query.userId },
     attributes: {
       exclude: ["deleted_at", "created_at", "updated_at", "password"],
@@ -188,6 +183,9 @@ const getSingleUser = async (query) => {
       },
     ],
   });
+  if (!user) {
+    throw new Error("User not found");
+  }
   return user;
 };
 
@@ -286,6 +284,17 @@ const deactivateUser = async (paramsData) => {
   return "user deactivated successfully";
 };
 
+const logOutUser = async (payload, user) => {
+  const userId = user.id;
+  const refreshTokenKey = userId + "-refresh-token";
+  const isCachedRefreshToken = redisClient.get(refreshTokenKey);
+
+  if (isCachedRefreshToken) {
+    redisClient.del(refreshTokenKey);
+  }
+  return "logout successfully";
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -296,4 +305,5 @@ module.exports = {
   refreshToken,
   resetPasswordByLink,
   deactivateUser,
+  logOutUser,
 };
