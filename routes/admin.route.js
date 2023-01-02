@@ -1,10 +1,10 @@
 const { Router } = require("express");
-const controllers = require("../controllers");
+const userController = require("../controllers/user.controller");
 const {
   verifyAdmin,
   checkAccessToken,
 } = require("../middlewares/auth.middleware");
-const serializer = require("../serializers");
+const userSerializer = require("../serializers/user.serializer");
 const genericResponse = require("../helper/generic-response.helper");
 const validator = require("../validators");
 const router = Router();
@@ -14,8 +14,8 @@ router.post(
   checkAccessToken,
   verifyAdmin,
   validator.userValidator.createUserSchema,
-  controllers.User.createUser,
-  serializer.userSerializer.createUser,
+  userController.createUser,
+  userSerializer.createUser,
   genericResponse.sendResponse
 );
 
@@ -23,8 +23,8 @@ router.get(
   "/users",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.getAllUser,
-  serializer.userSerializer.getAllUser,
+  userController.getAllUser,
+  userSerializer.getAllUser,
   genericResponse.sendResponse
 );
 
@@ -32,15 +32,15 @@ router.get(
   "/user/:userId",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.getSingleUser,
-  serializer.userSerializer.getSingleUser,
+  userController.getSingleUser,
+  userSerializer.getSingleUser,
   genericResponse.sendResponse
 );
 router.delete(
   "/user/:userId",
   checkAccessToken,
   verifyAdmin,
-  controllers.User.deactivateUser,
+  userController.deactivateUser,
   genericResponse.sendResponse
 );
 

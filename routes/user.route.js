@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const controllers = require("../controllers");
+const userController = require("../controllers/user.controller");
 const {
   checkAccessToken,
   checkRefreshToken,
@@ -11,7 +11,7 @@ const router = Router();
 router.post(
   "/login",
   validator.userValidator.loginSchema,
-  controllers.User.loginUser,
+  userController.loginUser,
   genericResponse.sendResponse
 );
 
@@ -19,27 +19,27 @@ router.patch(
   "/reset-password",
   checkAccessToken,
   validator.userValidator.resetPassword,
-  controllers.User.resetPassword,
+  userController.resetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/forget-password",
   validator.userValidator.forgetPassword,
-  controllers.User.forgetPassword,
+  userController.forgetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/reset-password/:token",
   validator.userValidator.resetPasswordByLink,
-  controllers.User.resetPasswordByLink,
+  userController.resetPasswordByLink,
   genericResponse.sendResponse
 );
 router.get(
   "/refresh-token",
   checkRefreshToken,
-  controllers.User.refreshToken,
+  userController.refreshToken,
   genericResponse.sendResponse
 );
 
