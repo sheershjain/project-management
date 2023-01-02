@@ -92,10 +92,9 @@ router.delete(
 );
 
 router.delete(
-  "/user-workspace/:workspaceId",
+  "/user-workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.removeUserWorkspaceSchema,
   controllers.Workspace.removeUserWorkspace,
   genericResponse.sendResponse
 );

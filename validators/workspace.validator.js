@@ -38,12 +38,4 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
-
-  removeUserWorkspaceSchema: async (req, res, next) => {
-    const schema = Joi.object({
-      userId: Joi.string().guid().required(),
-    });
-
-    validateRequest(req, res, next, schema, "body");
-  },
 };

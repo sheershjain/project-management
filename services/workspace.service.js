@@ -2,6 +2,7 @@ const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
 const mailer = require("../helper/mail.helper");
+const { query } = require("express");
 
 const createWorkspace = async (payload, user) => {
   const trans = await sequelize.transaction();
@@ -242,9 +243,10 @@ const deactivateWorkspace = async (user, paramsData) => {
   return "workspace deactivate successfully";
 };
 
-const removeUserWorkspace = async (payload, paramsData) => {
+const removeUserWorkspace = async (query) => {
+  // const workspaceId = query.workspaceId;
   const checkWorkspace = await models.Workspace.findOne({
-    where: { id: paramsData.workspaceId },
+    where: { id: query.workspaceId },
   });
 
   if (!checkWorkspace) {
@@ -254,25 +256,25 @@ const removeUserWorkspace = async (payload, paramsData) => {
   let existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: paramsData.workspaceId },
+        { user_id: query.userId },
+        { workspace_id: query.workspaceId },
       ],
     },
   });
 
   if (!existingRelation) {
-    throw new Error("User is not exist in workspace");
+    throw new Error("User does not exist in workspace");
   }
   await models.UserWorkspaceMapping.destroy({
     where: {
       [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: paramsData.workspaceId },
+        { user_id: query.userId },
+        { workspace_id: query.workspaceId },
       ],
     },
   });
   const user = await models.User.findOne({
-    where: { id: payload.userId },
+    where: { id: query.userId },
   });
 
   const body = `you are remove from  ${checkWorkspace.name}  workspace`;
