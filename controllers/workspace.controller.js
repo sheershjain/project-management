@@ -98,16 +98,14 @@ const deactivateWorkspace = async (req, res, next) => {
 
 const removeUserWorkspace = async (req, res, next) => {
   try {
-    const { params } = req;
-    const { body: payload } = req;
-    const paramsData = {
-      workspaceId: params.workspaceId,
-    };
+    // const { params } = req;
+    const { query } = req;
+    // const { body: payload } = req;
+    // const paramsData = {
+    //   workspaceId: params.workspaceId,
+    // };
 
-    const data = await WorkspaceService.removeUserWorkspace(
-      payload,
-      paramsData
-    );
+    const data = await WorkspaceService.removeUserWorkspace(query);
     res.data = data;
     next();
   } catch (error) {

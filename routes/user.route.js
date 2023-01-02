@@ -51,6 +51,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.addUserWorkspaceSchema,
   controllers.Workspace.addUserInWorkspace,
+  serializer.workspaceSerializer.addUserInWorkspace,
   genericResponse.sendResponse
 );
 
@@ -60,6 +61,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.workspaceSchema,
   controllers.Workspace.createWorkspace,
+  serializer.workspaceSerializer.createWorkspace,
   genericResponse.sendResponse
 );
 
@@ -90,10 +92,9 @@ router.delete(
 );
 
 router.delete(
-  "/user-workspace/:workspaceId",
+  "/user-workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.removeUserWorkspaceSchema,
   controllers.Workspace.removeUserWorkspace,
   genericResponse.sendResponse
 );
