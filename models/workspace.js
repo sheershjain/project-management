@@ -11,14 +11,14 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
 
       this.hasMany(models.Sprint, {
-        foreignKey: "workspace_id",
+        foreignKey: "workspaceId",
         targetKey: "id",
         as: "Sprint",
       });
 
       this.belongsToMany(models.User, {
         through: models.UserWorkspaceMapping,
-        foreignKey: "user_id",
+        foreignKey: "userId",
         as: "User",
       });
     }

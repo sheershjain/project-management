@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Task, {
-        foreignKey: "task_id",
+        foreignKey: "taskId",
         targetKey: "id",
         as: "Task",
       });
