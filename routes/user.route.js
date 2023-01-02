@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
 const workspaceCotroller = require("../controllers/workspace.controller");
+const sprintController = require("../controllers/sprint.controller");
 const {
   checkAccessToken,
   checkRefreshToken,
@@ -10,6 +11,8 @@ const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
 const workspaceValidator = require("../validators/workspace.validator");
 const workspaceSerializer = require("../serializers/workspace.serializer");
+const sprintValidator = require("../validators/sprint.validator");
+const sprintSerializer = require("../serializers/sprint.seralizer");
 const router = Router();
 
 router.post(
@@ -120,6 +123,45 @@ router.patch(
   checkAccessToken,
   verifyManager,
   workspaceCotroller.openWorkspace,
+  genericResponse.sendResponse
+);
+
+router.post(
+  "/sprint",
+  checkAccessToken,
+  sprintValidator.createSprintSchema,
+  sprintController.createSprint,
+  sprintSerializer.createSprint,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/sprint/:sprintId",
+  checkAccessToken,
+  sprintValidator.updateSprintSchema,
+  sprintController.updateSprint,
+  genericResponse.sendResponse
+);
+
+router.delete(
+  "/archive/:sprintId",
+  checkAccessToken,
+  sprintController.archiveSprint,
+  genericResponse.sendResponse
+);
+
+router.get(
+  "/sprint/:workspaceId",
+  checkAccessToken,
+  sprintController.mySprint,
+  sprintSerializer.getMySprint,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open/:sprintId",
+  checkAccessToken,
+  sprintController.openSprint,
   genericResponse.sendResponse
 );
 
