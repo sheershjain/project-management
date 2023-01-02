@@ -6,14 +6,14 @@ const {
 } = require("../middlewares/auth.middleware");
 const userSerializer = require("../serializers/user.serializer");
 const genericResponse = require("../helper/generic-response.helper");
-const validator = require("../validators");
+const userValidator = require("../validators/user.validator");
 const router = Router();
 
 router.post(
   "/user",
   checkAccessToken,
   verifyAdmin,
-  validator.userValidator.createUserSchema,
+  userValidator.createUserSchema,
   userController.createUser,
   userSerializer.createUser,
   genericResponse.sendResponse

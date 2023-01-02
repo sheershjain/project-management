@@ -5,7 +5,7 @@ const {
   checkRefreshToken,
 } = require("../middlewares/auth.middleware");
 const genericResponse = require("../helper/generic-response.helper");
-const validator = require("../validators");
+const userValidator = require("../validators/user.validator");
 const router = Router();
 
 router.post(
@@ -18,21 +18,21 @@ router.post(
 router.patch(
   "/reset-password",
   checkAccessToken,
-  validator.userValidator.resetPassword,
+  userValidator.resetPassword,
   userController.resetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/forget-password",
-  validator.userValidator.forgetPassword,
+  userValidator.forgetPassword,
   userController.forgetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/reset-password/:token",
-  validator.userValidator.resetPasswordByLink,
+  userValidator.resetPasswordByLink,
   userController.resetPasswordByLink,
   genericResponse.sendResponse
 );
