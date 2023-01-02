@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
+const designationController = require("../controllers/designation.controller");
 const {
   verifyAdmin,
   checkAccessToken,
@@ -7,6 +8,7 @@ const {
 const userSerializer = require("../serializers/user.serializer");
 const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
+const designationValidator = require("../validators/designation.validator");
 const router = Router();
 
 router.post(
@@ -48,8 +50,8 @@ router.patch(
   "/designation/:userId",
   checkAccessToken,
   verifyAdmin,
-  validator.designationValidator.designationSchema,
-  controllers.Designation.updateDesignation,
+  designationValidator.designationSchema,
+  designationController.updateDesignation,
   genericResponse.sendResponse
 );
 
