@@ -125,9 +125,9 @@ router.patch(
 );
 
 router.delete(
-  "/sprint/:sprintId",
+  "/archive/:sprintId",
   checkAccessToken,
-  controllers.Sprint.deleteSprint,
+  controllers.Sprint.archiveSprint,
   genericResponse.sendResponse
 );
 
@@ -136,6 +136,13 @@ router.get(
   checkAccessToken,
   controllers.Sprint.mySprint,
   serializer.sprintSerializer.getMySprint,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open/:sprintId",
+  checkAccessToken,
+  controllers.Sprint.openSprint,
   genericResponse.sendResponse
 );
 
