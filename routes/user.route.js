@@ -4,13 +4,13 @@ const {
   checkAccessToken,
   checkRefreshToken,
 } = require("../middlewares/auth.middleware");
-const genericResponse = require("../helper/generic-response.helper");
+const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
 const router = Router();
 
 router.post(
   "/login",
-  validator.userValidator.loginSchema,
+  userValidator.loginSchema,
   userController.loginUser,
   genericResponse.sendResponse
 );
@@ -42,5 +42,10 @@ router.get(
   userController.refreshToken,
   genericResponse.sendResponse
 );
-
+router.post(
+  "/logout",
+  checkAccessToken,
+  userController.logOutUser,
+  genericResponse.sendResponse
+);
 module.exports = router;
