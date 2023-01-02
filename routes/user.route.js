@@ -107,4 +107,12 @@ router.get(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/open/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  controllers.Workspace.openWorkspace,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

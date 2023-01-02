@@ -215,7 +215,7 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   return "user designation updated successfully";
 };
 
-const archiveWorkspace = async (user, paramsData) => {
+const archiveWorkspace = async (paramsData) => {
   const checkWorkspace = await models.Workspace.findOne({
     where: { id: paramsData.workspaceId },
   });
@@ -326,6 +326,24 @@ const myWorkspace = async (user) => {
   return workspace;
 };
 
+const openWorkspace = async (paramsData) => {
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+
+  if (checkWorkspace) {
+    throw new Error("Workspace is already opend");
+  }
+  const workspace = await models.Workspace.restore({
+    where: { id: paramsData.workspaceId },
+  });
+  if (!workspace) {
+    throw new Error("Workspace not found");
+  }
+
+  return "workspace open successfully";
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -335,4 +353,5 @@ module.exports = {
   archiveWorkspace,
   removeUserWorkspace,
   myWorkspace,
+  openWorkspace,
 };
