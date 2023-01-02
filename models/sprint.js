@@ -10,12 +10,12 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Task, {
-        foreignKey: "sprint_id",
+        foreignKey: "sprintId",
         sourceKey: "id",
         as: "Task",
       });
       this.belongsTo(models.Workspace, {
-        foreignKey: "workspace_id",
+        foreignKey: "workspaceId",
         targetKey: "id",
         as: "Workspace",
       });

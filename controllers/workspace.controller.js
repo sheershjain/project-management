@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const WorkspaceService = require("../services/workspace.service");
 
 const createWorkspace = async (req, res, next) => {
@@ -80,15 +80,14 @@ const updateUserDesignationInWorkspace = async (req, res, next) => {
   }
 };
 
-const deactivateWorkspace = async (req, res, next) => {
+const archiveWorkspace = async (req, res, next) => {
   try {
     const { params } = req;
-    const { user } = req;
     const paramsData = {
       workspaceId: params.workspaceId,
     };
 
-    const data = await WorkspaceService.deactivateWorkspace(user, paramsData);
+    const data = await WorkspaceService.archiveWorkspace(paramsData);
     res.data = data;
     next();
   } catch (error) {
@@ -98,13 +97,7 @@ const deactivateWorkspace = async (req, res, next) => {
 
 const removeUserWorkspace = async (req, res, next) => {
   try {
-    // const { params } = req;
     const { query } = req;
-    // const { body: payload } = req;
-    // const paramsData = {
-    //   workspaceId: params.workspaceId,
-    // };
-
     const data = await WorkspaceService.removeUserWorkspace(query);
     res.data = data;
     next();
@@ -123,6 +116,20 @@ const myWorkspace = async (req, res, next) => {
     commonErrorHandler(req, res, error.message, 400, error);
   }
 };
+const openWorkspace = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+
+    const data = await WorkspaceService.openWorkspace(paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
 
 module.exports = {
   createWorkspace,
@@ -130,7 +137,8 @@ module.exports = {
   getAllWorkSpace,
   updateWorkspace,
   updateUserDesignationInWorkspace,
-  deactivateWorkspace,
+  archiveWorkspace,
   removeUserWorkspace,
   myWorkspace,
+  openWorkspace,
 };

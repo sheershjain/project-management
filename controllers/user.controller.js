@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const userService = require("../services/user.service");
 
 const createUser = async (req, res, next) => {
@@ -111,6 +111,17 @@ const deactivateUser = async (req, res, next) => {
   }
 };
 
+const logOutUser = async (req, res, next) => {
+  try {
+    const { body: payload, user } = req;
+    const data = await userService.logOutUser(payload, user);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -121,4 +132,5 @@ module.exports = {
   refreshToken,
   resetPasswordByLink,
   deactivateUser,
+  logOutUser,
 };
