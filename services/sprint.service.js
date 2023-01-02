@@ -4,6 +4,12 @@ const { Op, where } = require("sequelize");
 const moment = require("moment");
 
 const createSprint = async (payload, user) => {
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: payload.workspaceId },
+  });
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
   const designation = await models.Designation.findOne({
     where: { designationCode: 103 },
   });
@@ -18,13 +24,6 @@ const createSprint = async (payload, user) => {
   });
   if (!isLeadWorkspace) {
     throw new Error("Access denied");
-  }
-
-  const checkWorkspace = await models.Workspace.findOne({
-    where: { id: payload.workspaceId },
-  });
-  if (!checkWorkspace) {
-    throw new Error("Workspace not found");
   }
 
   const currentTimeDateTime = moment().format("YYYY-MM-DD HH:mm:s");

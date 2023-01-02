@@ -99,6 +99,14 @@ router.delete(
   genericResponse.sendResponse
 );
 
+router.get(
+  "/workspace",
+  checkAccessToken,
+  controllers.Workspace.myWorkspace,
+  serializer.workspaceSerializer.getAllWorkspace,
+  genericResponse.sendResponse
+);
+
 router.post(
   "/sprint",
   checkAccessToken,
