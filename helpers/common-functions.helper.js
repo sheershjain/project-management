@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("./error-handler.helper");
+const { commonErrorHandler } = require("./errorHandler");
 
 const validateRequest = (req, res, next, schema, requestParamterType) => {
   let requestData = {};

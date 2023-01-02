@@ -10,13 +10,13 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         targetKey: "id",
         as: "User",
       });
 
       this.belongsTo(models.Role, {
-        foreignKey: "role_id",
+        foreignKey: "roleId",
         targetKey: "id",
         as: "Role",
       });
@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
   }
   UserRoleMapping.init(
     {
-      user_id: {
+      userId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      role_id: {
+      roleId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {

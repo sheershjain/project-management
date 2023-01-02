@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.User, {
         through: models.UserRoleMapping,
-        foreignKey: "role_id",
+        foreignKey: "roleId",
         sourceKey: "id",
         as: "User",
       });

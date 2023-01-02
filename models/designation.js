@@ -11,9 +11,14 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.User, {
         through: models.UserDesignationMapping,
-        foreignKey: "designation_id",
+        foreignKey: "designationId",
         sourceKey: "id",
         as: "User",
+      });
+      this.hasMany(models.UserWorkspaceMapping, {
+        foreignKey: "designationId",
+        targetKey: "id",
+        as: "Workspace",
       });
     }
   }
