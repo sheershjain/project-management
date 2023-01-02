@@ -124,10 +124,11 @@ const loginUser = async (payload) => {
 
   const accessToken = jwt.sign(
     { userId: user.dataValues.id },
-    process.env.SECRET_KEY_ACCESS,
-    {
-      expiresIn: process.env.JWT_ACCESS_EXPIRATION,
-    }
+    process.env.SECRET_KEY_ACCESS
+  );
+  refreshToken = jwt.sign(
+    { userId: user.dataValues.id },
+    process.env.SECRET_KEY_REFRESH
   );
   refreshToken = jwt.sign(
     { userId: user.dataValues.id },

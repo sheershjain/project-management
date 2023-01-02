@@ -18,6 +18,10 @@ const checkAccessToken = async (req, res, next) => {
           model: models.Role,
           as: "Role",
         },
+        {
+          model: models.Designation,
+          as: "Designation",
+        },
       ],
     });
     if (!user) {
@@ -63,8 +67,21 @@ const verifyAdmin = (req, res, next) => {
   }
 };
 
+const verifyManager = (req, res, next) => {
+  try {
+    if (req.user.Designation[0].designationCode == 102) {
+      next();
+    } else {
+      return res.status(403).json({ message: "Access denied" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: `Something went wrong!` });
+  }
+};
+
 module.exports = {
   checkAccessToken,
   verifyAdmin,
+  verifyManager,
   checkRefreshToken,
 };
