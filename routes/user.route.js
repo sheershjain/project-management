@@ -51,6 +51,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.addUserWorkspaceSchema,
   controllers.Workspace.addUserInWorkspace,
+  serializer.workspaceSerializer.addUserInWorkspace,
   genericResponse.sendResponse
 );
 
@@ -60,6 +61,7 @@ router.post(
   verifyManager,
   validator.workspaceValidator.workspaceSchema,
   controllers.Workspace.createWorkspace,
+  serializer.workspaceSerializer.createWorkspace,
   genericResponse.sendResponse
 );
 
@@ -90,10 +92,9 @@ router.delete(
 );
 
 router.delete(
-  "/user-workspace/:workspaceId",
+  "/user-workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.removeUserWorkspaceSchema,
   controllers.Workspace.removeUserWorkspace,
   genericResponse.sendResponse
 );
@@ -146,6 +147,12 @@ router.delete(
   controllers.Task.deleteTask,
   genericResponse.sendResponse
 );
+router.delete(
+  "/sprint/:sprintId",
+  checkAccessToken,
+  controllers.Sprint.deleteSprint,
+  genericResponse.sendResponse
+);
 
 router.get(
   "/task",
@@ -182,6 +189,12 @@ router.patch(
   "/approve/:taskId",
   checkAccessToken,
   controllers.Task.approveTask,
+  genericResponse.sendResponse
+);
+ router.get("/sprint/:workspaceId",
+  checkAccessToken,
+  controllers.Sprint.mySprint,
+  serializer.sprintSerializer.getMySprint,
   genericResponse.sendResponse
 );
 

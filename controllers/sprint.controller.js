@@ -27,7 +27,38 @@ const updateSprint = async (req, res, next) => {
   }
 };
 
+const deleteSprint = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      sprintId: params.sprintId,
+    };
+    const { user } = req;
+    const data = await sprintService.deleteSprint(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
+const mySprint = async (req, res, next) => {
+  try {
+    const { params, user } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+    const data = await sprintService.mySprint(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createSprint,
   updateSprint,
+  deleteSprint,
+  mySprint,
 };
