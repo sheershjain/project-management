@@ -146,7 +146,7 @@ const updateWorkspace = async (payload, user, paramsData) => {
   const workspace = await models.Workspace.update(payload, {
     where: { id: paramsData.workspaceId },
   });
-  return "workspace description updated successfully";
+  return "workspace updated successfully";
 };
 
 const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
@@ -204,7 +204,7 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
 
-  return payload;
+  return "user designation updated successfully";
 };
 
 const deactivateWorkspace = async (user, paramsData) => {
