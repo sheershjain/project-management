@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const WorkspaceService = require("../services/workspace.service");
 
 const createWorkspace = async (req, res, next) => {

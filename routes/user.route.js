@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
+const workspaceCotroller = require("../controllers/workspace.controller");
 const {
   checkAccessToken,
   checkRefreshToken,
@@ -7,6 +8,8 @@ const {
 } = require("../middlewares/auth.middleware");
 const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
+const workspaceValidator = require("../validators/workspace.validator");
+const workspaceSerializer = require("../serializers/workspace.serializer");
 const router = Router();
 
 router.post(
@@ -54,9 +57,9 @@ router.post(
   "/user-workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.addUserWorkspaceSchema,
-  controllers.Workspace.addUserInWorkspace,
-  serializer.workspaceSerializer.addUserInWorkspace,
+  workspaceValidator.addUserWorkspaceSchema,
+  workspaceCotroller.addUserInWorkspace,
+  workspaceSerializer.addUserInWorkspace,
   genericResponse.sendResponse
 );
 
@@ -64,9 +67,9 @@ router.post(
   "/workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.workspaceSchema,
-  controllers.Workspace.createWorkspace,
-  serializer.workspaceSerializer.createWorkspace,
+  workspaceValidator.workspaceSchema,
+  workspaceCotroller.createWorkspace,
+  workspaceSerializer.createWorkspace,
   genericResponse.sendResponse
 );
 
@@ -74,8 +77,8 @@ router.patch(
   "/workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.updateWorkspaceSchema,
-  controllers.Workspace.updateWorkspace,
+  workspaceValidator.updateWorkspaceSchema,
+  workspaceCotroller.updateWorkspace,
   genericResponse.sendResponse
 );
 
@@ -83,8 +86,8 @@ router.patch(
   "/user-workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.updateDesignationWorkspaceSchema,
-  controllers.Workspace.updateUserDesignationInWorkspace,
+  workspaceValidator.updateDesignationWorkspaceSchema,
+  workspaceCotroller.updateUserDesignationInWorkspace,
   genericResponse.sendResponse
 );
 
@@ -92,7 +95,7 @@ router.delete(
   "/archive/:workspaceId",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.archiveWorkspace,
+  workspaceCotroller.archiveWorkspace,
   genericResponse.sendResponse
 );
 
@@ -100,15 +103,15 @@ router.delete(
   "/user-workspace",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.removeUserWorkspace,
+  workspaceCotroller.removeUserWorkspace,
   genericResponse.sendResponse
 );
 
 router.get(
   "/workspace",
   checkAccessToken,
-  controllers.Workspace.myWorkspace,
-  serializer.workspaceSerializer.getAllWorkspace,
+  workspaceCotroller.myWorkspace,
+  workspaceSerializer.getAllWorkspace,
   genericResponse.sendResponse
 );
 
@@ -116,7 +119,7 @@ router.patch(
   "/open/:workspaceId",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.openWorkspace,
+  workspaceCotroller.openWorkspace,
   genericResponse.sendResponse
 );
 

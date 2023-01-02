@@ -1,11 +1,13 @@
 const { Router } = require("express");
 const userController = require("../controllers/user.controller");
 const designationController = require("../controllers/designation.controller");
+const workspaceCotroller = require("../controllers/workspace.controller");
 const {
   verifyAdmin,
   checkAccessToken,
 } = require("../middlewares/auth.middleware");
 const userSerializer = require("../serializers/user.serializer");
+const workspaceSerializer = require("../serializers/workspace.serializer");
 const genericResponse = require("../helpers/generic-response.helper");
 const userValidator = require("../validators/user.validator");
 const designationValidator = require("../validators/designation.validator");
@@ -59,8 +61,8 @@ router.get(
   "/workspace",
   checkAccessToken,
   verifyAdmin,
-  controllers.Workspace.getAllWorkSpace,
-  serializer.workspaceSerializer.getAllWorkspace,
+  workspaceCotroller.getAllWorkSpace,
+  workspaceSerializer.getAllWorkspace,
   genericResponse.sendResponse
 );
 

@@ -1,7 +1,7 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
-const mailer = require("../helper/mail.helper");
+const mailer = require("../helpers/mail.helper");
 const { query } = require("express");
 
 const createWorkspace = async (payload, user) => {
@@ -18,9 +18,9 @@ const createWorkspace = async (payload, user) => {
     const workspaceId = workspace.dataValues.id;
 
     const workspaceData = {
-      user_id: userId,
-      workspace_id: workspaceId,
-      designation_id: user.Designation[0].dataValues.id,
+      userId: userId,
+      workspaceId: workspaceId,
+      designationId: user.Designation[0].dataValues.id,
     };
 
     const userWorkspaceMapping = await models.UserWorkspaceMapping.create(
@@ -65,8 +65,8 @@ const addUserInWorkspace = async (payload) => {
   const existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: payload.workspaceId },
+        { userId: payload.userId },
+        { workspaceId: payload.workspaceId },
       ],
     },
   });
@@ -76,9 +76,9 @@ const addUserInWorkspace = async (payload) => {
   }
 
   let userWorkspaceData = {
-    user_id: payload.userId,
-    workspace_id: payload.workspaceId,
-    designation_id: payload.designationId,
+    userId: payload.userId,
+    workspaceId: payload.workspaceId,
+    designationId: payload.designationId,
   };
   const addInWorkspace = await models.UserWorkspaceMapping.create(
     userWorkspaceData
@@ -98,8 +98,8 @@ const getAllWorkSpace = async (query) => {
     attributes: {
       exclude: [
         "created_at",
-        "user_id",
-        "designation_id",
+        "userId",
+        "designationId",
         "updated_at",
         "deleted_at",
       ],
@@ -133,10 +133,7 @@ const updateWorkspace = async (payload, user, paramsData) => {
 
   let existingManager = await models.UserWorkspaceMapping.findOne({
     where: {
-      [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: paramsData.workspaceId },
-      ],
+      [Op.and]: [{ userId: user.id }, { workspaceId: paramsData.workspaceId }],
     },
   });
 
@@ -161,8 +158,8 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   const userInWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: paramsData.workspaceId },
+        { userId: payload.userId },
+        { workspaceId: paramsData.workspaceId },
       ],
     },
   });
@@ -184,9 +181,9 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   let existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: payload.userId },
-        { workspace_id: paramsData.workspaceId },
-        { designation_id: payload.designationId },
+        { userId: payload.userId },
+        { workspaceId: paramsData.workspaceId },
+        { designationId: payload.designationId },
       ],
     },
   });
@@ -196,13 +193,13 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   }
   await models.UserWorkspaceMapping.update(
     {
-      designation_id: payload.designationId,
+      designationId: payload.designationId,
     },
     {
       where: {
         [Op.and]: [
-          { user_id: payload.userId },
-          { workspace_id: paramsData.workspaceId },
+          { userId: payload.userId },
+          { workspaceId: paramsData.workspaceId },
         ],
       },
     }
@@ -278,10 +275,7 @@ const removeUserWorkspace = async (query) => {
 
   let existingRelation = await models.UserWorkspaceMapping.findOne({
     where: {
-      [Op.and]: [
-        { user_id: query.userId },
-        { workspace_id: query.workspaceId },
-      ],
+      [Op.and]: [{ userId: query.userId }, { workspaceId: query.workspaceId }],
     },
   });
 
@@ -290,10 +284,7 @@ const removeUserWorkspace = async (query) => {
   }
   await models.UserWorkspaceMapping.destroy({
     where: {
-      [Op.and]: [
-        { user_id: query.userId },
-        { workspace_id: query.workspaceId },
-      ],
+      [Op.and]: [{ userId: query.userId }, { workspaceId: query.workspaceId }],
     },
   });
   const user = await models.User.findOne({
@@ -309,7 +300,7 @@ const removeUserWorkspace = async (query) => {
 
 const myWorkspace = async (user) => {
   const workspace = await models.UserWorkspaceMapping.findAll({
-    where: { user_id: user.id },
+    where: { userId: user.id },
     include: [
       {
         model: models.Designation,

@@ -3,7 +3,7 @@ const getAllWorkspace = async (req, res, next) => {
   const serializedData = [];
   data.forEach((item) => {
     const user = {
-      workspaceId: item.dataValues.workspace_id,
+      workspaceId: item.dataValues.workspaceId,
       email: item.User.email,
       designationTitle: item.Designation.designationTitle,
     };
@@ -28,8 +28,8 @@ const addUserInWorkspace = async (req, res, next) => {
   const data = res.data || null;
   const response = {
     userId: data.user_id,
-    workspaceId: data.workspace_id,
-    designationId: data.designation_id,
+    workspaceId: data.workspaceId,
+    designationId: data.designationId,
   };
   res.data = response;
   next();
