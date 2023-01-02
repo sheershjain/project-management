@@ -84,10 +84,10 @@ router.patch(
 );
 
 router.delete(
-  "/workspace/:workspaceId",
+  "/archive/:workspaceId",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.deactivateWorkspace,
+  controllers.Workspace.archiveWorkspace,
   genericResponse.sendResponse
 );
 

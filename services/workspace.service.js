@@ -215,7 +215,7 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
   return "user designation updated successfully";
 };
 
-const deactivateWorkspace = async (user, paramsData) => {
+const archiveWorkspace = async (user, paramsData) => {
   const checkWorkspace = await models.Workspace.findOne({
     where: { id: paramsData.workspaceId },
   });
@@ -223,28 +223,51 @@ const deactivateWorkspace = async (user, paramsData) => {
   if (!checkWorkspace) {
     throw new Error("Workspace not found");
   }
-  let existingManager = await models.UserWorkspaceMapping.findOne({
-    where: {
-      [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: paramsData.workspaceId },
-      ],
-    },
-  });
+  const trans = await sequelize.transaction();
+  try {
+    const sprint = await models.Sprint.findAll(
+      {
+        where: { workspaceId: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
 
-  if (!existingManager) {
-    throw new Error("Access denied");
+    for (let sprintId = 0; sprintId < sprint.length; sprintId++) {
+      const task = await models.Task.destroy(
+        {
+          where: { sprintId: sprint[sprintId].id },
+        },
+        { transaction: trans }
+      );
+    }
+
+    const destroySprint = await models.Sprint.destroy(
+      {
+        where: { workspaceId: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
+
+    const workspace = await models.Workspace.destroy(
+      {
+        where: { id: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
+    if (!workspace) {
+      throw new Error("Something went wrong");
+    }
+
+    await trans.commit();
+    return "workspace deleted successfully";
+  } catch (error) {
+    await trans.rollback();
+    console.log(error.message);
+    return { data: null, error: error };
   }
-  await models.Workspace.destroy({
-    where: {
-      id: paramsData.workspaceId,
-    },
-  });
-  return "workspace deactivate successfully";
 };
 
 const removeUserWorkspace = async (query) => {
-  // const workspaceId = query.workspaceId;
   const checkWorkspace = await models.Workspace.findOne({
     where: { id: query.workspaceId },
   });
@@ -309,7 +332,7 @@ module.exports = {
   getAllWorkSpace,
   updateWorkspace,
   updateUserDesignationInWorkspace,
-  deactivateWorkspace,
+  archiveWorkspace,
   removeUserWorkspace,
   myWorkspace,
 };

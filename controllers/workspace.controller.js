@@ -80,7 +80,7 @@ const updateUserDesignationInWorkspace = async (req, res, next) => {
   }
 };
 
-const deactivateWorkspace = async (req, res, next) => {
+const archiveWorkspace = async (req, res, next) => {
   try {
     const { params } = req;
     const { user } = req;
@@ -88,7 +88,7 @@ const deactivateWorkspace = async (req, res, next) => {
       workspaceId: params.workspaceId,
     };
 
-    const data = await WorkspaceService.deactivateWorkspace(user, paramsData);
+    const data = await WorkspaceService.archiveWorkspace(user, paramsData);
     res.data = data;
     next();
   } catch (error) {
@@ -130,7 +130,7 @@ module.exports = {
   getAllWorkSpace,
   updateWorkspace,
   updateUserDesignationInWorkspace,
-  deactivateWorkspace,
+  archiveWorkspace,
   removeUserWorkspace,
   myWorkspace,
 };
