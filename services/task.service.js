@@ -214,7 +214,9 @@ const taskStatus = async (payload, user, paramsData) => {
     throw new Error("You can not change task status");
   }
   const leadDesignation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   const sprintId = task.sprintId;
   const checkSprint = await sprint(sprintId);
@@ -257,7 +259,9 @@ const approveTask = async (user, paramsData) => {
   });
 
   const leadDesignation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   const sprintId = task.sprintId;
   const checkSprint = await sprint(sprintId);

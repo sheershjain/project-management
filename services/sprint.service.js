@@ -11,7 +11,9 @@ const createSprint = async (payload, user) => {
     throw new Error("Workspace not found");
   }
   const designation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   const isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
@@ -44,7 +46,9 @@ const updateSprint = async (payload, user, paramsData) => {
     throw new Error("Sprint not found");
   }
   const designation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
@@ -74,7 +78,9 @@ const archiveSprint = async (user, paramsData) => {
     throw new Error("Sprint not found");
   }
   const designation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
@@ -158,7 +164,12 @@ const openSprint = async (user, paramsData) => {
     }
     const designation = await models.Designation.findOne(
       {
-        where: { designationCode: 103 },
+        where: {
+          [Op.and]: [
+            { designationCode: 103 },
+            { designationCode: 102 },
+          ],
+        },
       },
       { transaction: trans }
     );
@@ -240,7 +251,9 @@ const openAllSprint = async (user, paramsData) => {
     }
     const designation = await models.Designation.findOne(
       {
-        where: { designationCode: 103 },
+        where: {
+          [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+        },
       },
       { transaction: trans }
     );
