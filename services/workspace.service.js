@@ -37,7 +37,7 @@ const createWorkspace = async (payload, user) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 
@@ -260,7 +260,7 @@ const archiveWorkspace = async (paramsData) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 

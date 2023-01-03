@@ -88,7 +88,7 @@ const createUser = async (payload) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 

@@ -114,7 +114,7 @@ const archiveSprint = async (user, paramsData) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 
@@ -145,7 +145,7 @@ const openSprint = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!sprint) {
-      throw new Error("something went wrong");
+      throw new Error("sprint not found");
     }
     const checkSprint = await models.Sprint.findOne(
       {
@@ -154,7 +154,7 @@ const openSprint = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!checkSprint) {
-      throw new Error("something went wrong");
+      throw new Error("sprint not found");
     }
     const designation = await models.Designation.findOne(
       {
@@ -163,7 +163,7 @@ const openSprint = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!designation) {
-      throw new Error("something went wrong");
+      throw new Error("designation not found");
     }
     const isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
       {
@@ -179,7 +179,7 @@ const openSprint = async (user, paramsData) => {
     );
 
     if (!isLeadWorkspace) {
-      throw new Error("something went wrong");
+      throw new Error("Access denied");
     }
 
     const findWorkspace = await models.Workspace.findOne(
@@ -196,7 +196,7 @@ const openSprint = async (user, paramsData) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 
@@ -269,7 +269,7 @@ const openAllSprint = async (user, paramsData) => {
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 module.exports = {
