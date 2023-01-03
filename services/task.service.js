@@ -132,11 +132,11 @@ const archiveTask = async (user, paramsData) => {
     where: { id: paramsData.taskId },
   });
 
-  const body = `Your task has been deleted by -  ${user.email}`;
+  const body = `Your task has been archive by -  ${user.email}`;
   const subject = "Task Deleted";
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
-  return "task deleted successfully";
+  return "task archive successfully";
 };
 
 const myTask = async (user) => {

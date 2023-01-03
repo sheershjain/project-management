@@ -71,10 +71,26 @@ const openSprint = async (req, res, next) => {
   }
 };
 
+const openAllSprint = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+    const { user } = req;
+    const data = await sprintService.openAllSprint(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createSprint,
   updateSprint,
   archiveSprint,
   mySprint,
   openSprint,
+  openAllSprint,
 };

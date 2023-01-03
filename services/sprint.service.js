@@ -97,16 +97,20 @@ const archiveSprint = async (user, paramsData) => {
       },
       { transaction: trans }
     );
-
+    if (!task) {
+      throw new Error("something went wrong");
+    }
     const sprint = await models.Sprint.destroy(
       {
         where: { id: paramsData.sprintId },
       },
       { transaction: trans }
     );
-
+    if (!sprint) {
+      throw new Error("something went wrong");
+    }
     await trans.commit();
-    return "sprint deleted successfully";
+    return "sprint archive successfully";
   } catch (error) {
     await trans.rollback();
     console.log(error.message);
@@ -140,20 +144,28 @@ const openSprint = async (user, paramsData) => {
       },
       { transaction: trans }
     );
-
+    if (!sprint) {
+      throw new Error("something went wrong");
+    }
     const checkSprint = await models.Sprint.findOne(
       {
         where: { id: paramsData.sprintId },
       },
       { transaction: trans }
     );
+    if (!checkSprint) {
+      throw new Error("something went wrong");
+    }
     const designation = await models.Designation.findOne(
       {
         where: { designationCode: 103 },
       },
       { transaction: trans }
     );
-    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
+    if (!designation) {
+      throw new Error("something went wrong");
+    }
+    const isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
       {
         where: {
           [Op.and]: [
@@ -167,7 +179,7 @@ const openSprint = async (user, paramsData) => {
     );
 
     if (!isLeadWorkspace) {
-      throw new Error("Access denied");
+      throw new Error("something went wrong");
     }
 
     const findWorkspace = await models.Workspace.findOne(
@@ -177,9 +189,8 @@ const openSprint = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!findWorkspace) {
-      throw new Error("Workspace not found");
+      throw new Error("something went wrong");
     }
-
     await trans.commit();
     return "sprint opened successfully";
   } catch (error) {
@@ -189,10 +200,83 @@ const openSprint = async (user, paramsData) => {
   }
 };
 
+const openAllSprint = async (user, paramsData) => {
+  const findWorkspace = await models.Workspace.findOne({
+    where: { id: paramsData.workspaceId },
+  });
+  if (!findWorkspace) {
+    throw new Error("Workspace not found");
+  }
+  const trans = await sequelize.transaction();
+  try {
+    const sprint = await models.Sprint.restore(
+      {
+        where: { workspaceId: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
+    if (!sprint) {
+      throw new Error("something went wrong");
+    }
+    const checkSprint = await models.Sprint.findAll(
+      {
+        where: { workspaceId: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
+    if (!checkSprint) {
+      throw new Error("something went wrong");
+    }
+    for (let sprint = 0; sprint < checkSprint.length; sprint++) {
+      const task = await models.Task.restore(
+        {
+          where: { sprintId: checkSprint[sprint].id },
+        },
+        { transaction: trans }
+      );
+      if (!task) {
+        throw new Error("something went wrong");
+      }
+    }
+    const designation = await models.Designation.findOne(
+      {
+        where: { designationCode: 103 },
+      },
+      { transaction: trans }
+    );
+    if (!designation) {
+      throw new Error("something went wrong");
+    }
+    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
+      {
+        where: {
+          [Op.and]: [
+            { userId: user.id },
+            { workspaceId: paramsData.workspaceId },
+            { designationId: designation.id },
+          ],
+        },
+      },
+      { transaction: trans }
+    );
+
+    if (!isLeadWorkspace) {
+      throw new Error("something went wrong");
+    }
+
+    await trans.commit();
+    return "All sprint opened successfully";
+  } catch (error) {
+    await trans.rollback();
+    console.log(error.message);
+    return { data: null, error: error };
+  }
+};
 module.exports = {
   createSprint,
   updateSprint,
   archiveSprint,
   mySprint,
   openSprint,
+  openAllSprint,
 };

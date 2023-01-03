@@ -250,4 +250,10 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/open-all-sprint/:workspaceId",
+  checkAccessToken,
+  sprintController.openAllSprint,
+  genericResponse.sendResponse
+);
 module.exports = router;
