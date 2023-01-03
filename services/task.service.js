@@ -173,6 +173,9 @@ const addTaskComment = async (payload, user) => {
   if (!task) {
     throw new Error("Task not found");
   }
+  if (task.status == "approve") {
+    throw new Error("You can not add task comment");
+  }
   const taskComment = await models.TaskComment.create(payload);
   return taskComment;
 };
@@ -185,6 +188,10 @@ const taskStatus = async (payload, user, paramsData) => {
   });
   if (!task) {
     throw new Error("Task not found");
+  }
+
+  if (task.status == "approve") {
+    throw new Error("You can not change task status");
   }
   const leadDesignation = await models.Designation.findOne({
     where: { designationCode: 103 },
