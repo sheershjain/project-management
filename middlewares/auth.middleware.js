@@ -25,7 +25,7 @@ const checkAccessToken = async (req, res, next) => {
       ],
     });
     if (!user) {
-      throw new Error("User Not found");
+      throw new Error("User Not found please login");
     }
     req.user = user;
     next();
