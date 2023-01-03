@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const sprintService = require("../services/sprint.service");
 
 const createSprint = async (req, res, next) => {
@@ -27,14 +27,14 @@ const updateSprint = async (req, res, next) => {
   }
 };
 
-const deleteSprint = async (req, res, next) => {
+const archiveSprint = async (req, res, next) => {
   try {
     const { params } = req;
     const paramsData = {
       sprintId: params.sprintId,
     };
     const { user } = req;
-    const data = await sprintService.deleteSprint(user, paramsData);
+    const data = await sprintService.archiveSprint(user, paramsData);
     res.data = data;
     next();
   } catch (error) {
@@ -56,9 +56,25 @@ const mySprint = async (req, res, next) => {
   }
 };
 
+const openSprint = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      sprintId: params.sprintId,
+    };
+    const { user } = req;
+    const data = await sprintService.openSprint(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createSprint,
   updateSprint,
-  deleteSprint,
+  archiveSprint,
   mySprint,
+  openSprint,
 };

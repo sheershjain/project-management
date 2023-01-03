@@ -10,19 +10,19 @@ module.exports = (sequelize, Sequelize) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Workspace, {
-        foreignKey: "workspace_id",
+        foreignKey: "workspaceId",
         targetKey: "id",
         as: "Workspace",
       });
 
       this.belongsTo(models.User, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         targetKey: "id",
         as: "User",
       });
 
       this.belongsTo(models.Designation, {
-        foreignKey: "designation_id",
+        foreignKey: "designationId",
         targetKey: "id",
         as: "Designation",
       });
@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
   }
   UserWorkspaceMapping.init(
     {
-      user_id: {
+      userId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      designation_id: {
+      designationId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
@@ -46,7 +46,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
       },
-      workspace_id: {
+      workspaceId: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {

@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { validateRequest } = require("../helper/common-functions.helper");
+const { validateRequest } = require("../helpers/common-functions.helper");
 const moment = require("moment");
 
 module.exports = {

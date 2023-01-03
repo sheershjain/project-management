@@ -16,9 +16,9 @@ const createSprint = async (payload, user) => {
   const isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: payload.workspaceId },
-        { designation_id: designation.id },
+        { userId: user.id },
+        { workspaceId: payload.workspaceId },
+        { designationId: designation.id },
       ],
     },
   });
@@ -49,9 +49,9 @@ const updateSprint = async (payload, user, paramsData) => {
   let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: checkSprint.dataValues.workspaceId },
-        { designation_id: designation.id },
+        { userId: user.id },
+        { workspaceId: checkSprint.dataValues.workspaceId },
+        { designationId: designation.id },
       ],
     },
   });
@@ -66,31 +66,31 @@ const updateSprint = async (payload, user, paramsData) => {
   return "sprint updated successfully";
 };
 
-const deleteSprint = async (user, paramsData) => {
+const archiveSprint = async (user, paramsData) => {
   const checkSprint = await models.Sprint.findOne({
     where: { id: paramsData.sprintId },
   });
   if (!checkSprint) {
     throw new Error("Sprint not found");
   }
+  const designation = await models.Designation.findOne({
+    where: { designationCode: 103 },
+  });
+  let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [
+        { userId: user.id },
+        { workspaceId: checkSprint.dataValues.workspaceId },
+        { designationId: designation.id },
+      ],
+    },
+  });
+
+  if (!isLeadWorkspace) {
+    throw new Error("Access denied");
+  }
   const trans = await sequelize.transaction();
   try {
-    const designation = await models.Designation.findOne({
-      where: { designationCode: 103 },
-    });
-    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
-      where: {
-        [Op.and]: [
-          { user_id: user.id },
-          { workspace_id: checkSprint.dataValues.workspaceId },
-          { designation_id: designation.id },
-        ],
-      },
-    });
-
-    if (!isLeadWorkspace) {
-      throw new Error("Access denied");
-    }
     const task = await models.Task.destroy(
       {
         where: { sprintId: paramsData.sprintId },
@@ -118,8 +118,8 @@ const mySprint = async (user, paramsData) => {
   const checkWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: paramsData.workspaceId },
+        { userId: user.id },
+        { workspaceId: paramsData.workspaceId },
       ],
     },
   });
@@ -129,14 +129,63 @@ const mySprint = async (user, paramsData) => {
   }
 
   const sprint = await models.Sprint.findAll({
-    where: { workspaceId: checkWorkspace.workspace_id },
+    where: { workspaceId: checkWorkspace.workspaceId },
   });
   return sprint;
+};
+
+const openSprint = async (user, paramsData) => {
+  const trans = await sequelize.transaction();
+  try {
+    const sprint = await models.Sprint.restore(
+      {
+        where: { id: paramsData.sprintId },
+      },
+      { transaction: trans }
+    );
+
+    const checkSprint = await models.Sprint.findOne(
+      {
+        where: { id: paramsData.sprintId },
+      },
+      { transaction: trans }
+    );
+    const designation = await models.Designation.findOne(
+      {
+        where: { designationCode: 103 },
+      },
+      { transaction: trans }
+    );
+    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
+      {
+        where: {
+          [Op.and]: [
+            { userId: user.id },
+            { workspaceId: checkSprint.dataValues.workspaceId },
+            { designationId: designation.id },
+          ],
+        },
+      },
+      { transaction: trans }
+    );
+
+    if (!isLeadWorkspace) {
+      throw new Error("Access denied");
+    }
+
+    await trans.commit();
+    return "sprint opened successfully";
+  } catch (error) {
+    await trans.rollback();
+    console.log(error.message);
+    return { data: null, error: error };
+  }
 };
 
 module.exports = {
   createSprint,
   updateSprint,
-  deleteSprint,
+  archiveSprint,
   mySprint,
+  openSprint,
 };

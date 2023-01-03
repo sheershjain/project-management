@@ -3,8 +3,8 @@ module.exports = {
     const response = {
       statusCode: 200,
       data: res.data || {},
-      message: "Success"
-    }
+      message: "Success",
+    };
     return res.status(200).json(response);
   },
 };

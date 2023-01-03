@@ -1,47 +1,58 @@
 const { Router } = require("express");
-const controllers = require("../controllers");
+const userController = require("../controllers/user.controller");
+const workspaceCotroller = require("../controllers/workspace.controller");
+const sprintController = require("../controllers/sprint.controller");
 const {
   checkAccessToken,
   checkRefreshToken,
   verifyManager,
 } = require("../middlewares/auth.middleware");
-const serializer = require("../serializers");
-const genericResponse = require("../helper/generic-response.helper");
-const validator = require("../validators");
+const genericResponse = require("../helpers/generic-response.helper");
+const userValidator = require("../validators/user.validator");
+const workspaceValidator = require("../validators/workspace.validator");
+const workspaceSerializer = require("../serializers/workspace.serializer");
+const sprintValidator = require("../validators/sprint.validator");
+const sprintSerializer = require("../serializers/sprint.seralizer");
 const router = Router();
 
 router.post(
   "/login",
-  validator.userValidator.loginSchema,
-  controllers.User.loginUser,
+  userValidator.loginSchema,
+  userController.loginUser,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/reset-password",
   checkAccessToken,
-  validator.userValidator.resetPassword,
-  controllers.User.resetPassword,
+  userValidator.resetPassword,
+  userController.resetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/forget-password",
-  validator.userValidator.forgetPassword,
-  controllers.User.forgetPassword,
+  userValidator.forgetPassword,
+  userController.forgetPassword,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/reset-password/:token",
-  validator.userValidator.resetPasswordByLink,
-  controllers.User.resetPasswordByLink,
+  userValidator.resetPasswordByLink,
+  userController.resetPasswordByLink,
   genericResponse.sendResponse
 );
 router.get(
   "/refresh-token",
   checkRefreshToken,
-  controllers.User.refreshToken,
+  userController.refreshToken,
+  genericResponse.sendResponse
+);
+router.post(
+  "/logout",
+  checkAccessToken,
+  userController.logOutUser,
   genericResponse.sendResponse
 );
 
@@ -49,9 +60,9 @@ router.post(
   "/user-workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.addUserWorkspaceSchema,
-  controllers.Workspace.addUserInWorkspace,
-  serializer.workspaceSerializer.addUserInWorkspace,
+  workspaceValidator.addUserWorkspaceSchema,
+  workspaceCotroller.addUserInWorkspace,
+  workspaceSerializer.addUserInWorkspace,
   genericResponse.sendResponse
 );
 
@@ -59,9 +70,9 @@ router.post(
   "/workspace",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.workspaceSchema,
-  controllers.Workspace.createWorkspace,
-  serializer.workspaceSerializer.createWorkspace,
+  workspaceValidator.workspaceSchema,
+  workspaceCotroller.createWorkspace,
+  workspaceSerializer.createWorkspace,
   genericResponse.sendResponse
 );
 
@@ -69,8 +80,8 @@ router.patch(
   "/workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.updateWorkspaceSchema,
-  controllers.Workspace.updateWorkspace,
+  workspaceValidator.updateWorkspaceSchema,
+  workspaceCotroller.updateWorkspace,
   genericResponse.sendResponse
 );
 
@@ -78,16 +89,16 @@ router.patch(
   "/user-workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
-  validator.workspaceValidator.updateDesignationWorkspaceSchema,
-  controllers.Workspace.updateUserDesignationInWorkspace,
+  workspaceValidator.updateDesignationWorkspaceSchema,
+  workspaceCotroller.updateUserDesignationInWorkspace,
   genericResponse.sendResponse
 );
 
 router.delete(
-  "/workspace/:workspaceId",
+  "/archive/:workspaceId",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.deactivateWorkspace,
+  workspaceCotroller.archiveWorkspace,
   genericResponse.sendResponse
 );
 
@@ -95,32 +106,40 @@ router.delete(
   "/user-workspace",
   checkAccessToken,
   verifyManager,
-  controllers.Workspace.removeUserWorkspace,
+  workspaceCotroller.removeUserWorkspace,
   genericResponse.sendResponse
 );
 
 router.get(
   "/workspace",
   checkAccessToken,
-  controllers.Workspace.myWorkspace,
-  serializer.workspaceSerializer.getAllWorkspace,
+  workspaceCotroller.myWorkspace,
+  workspaceSerializer.getAllWorkspace,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open/:workspaceId",
+  checkAccessToken,
+  verifyManager,
+  workspaceCotroller.openWorkspace,
   genericResponse.sendResponse
 );
 
 router.post(
   "/sprint",
   checkAccessToken,
-  validator.sprintValidator.createSprintSchema,
-  controllers.Sprint.createSprint,
-  serializer.sprintSerializer.createSprint,
+  sprintValidator.createSprintSchema,
+  sprintController.createSprint,
+  sprintSerializer.createSprint,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/sprint/:sprintId",
   checkAccessToken,
-  validator.sprintValidator.updateSprintSchema,
-  controllers.Sprint.updateSprint,
+  sprintValidator.updateSprintSchema,
+  sprintController.updateSprint,
   genericResponse.sendResponse
 );
 
@@ -148,9 +167,9 @@ router.delete(
   genericResponse.sendResponse
 );
 router.delete(
-  "/sprint/:sprintId",
+  "/archive/:sprintId",
   checkAccessToken,
-  controllers.Sprint.deleteSprint,
+  sprintController.archiveSprint,
   genericResponse.sendResponse
 );
 
@@ -194,8 +213,15 @@ router.patch(
 router.get(
   "/sprint/:workspaceId",
   checkAccessToken,
-  controllers.Sprint.mySprint,
-  serializer.sprintSerializer.getMySprint,
+  sprintController.mySprint,
+  sprintSerializer.getMySprint,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open/:sprintId",
+  checkAccessToken,
+  sprintController.openSprint,
   genericResponse.sendResponse
 );
 

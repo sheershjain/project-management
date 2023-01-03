@@ -11,24 +11,24 @@ module.exports = (sequelize, Sequelize) => {
       // define association here
       this.belongsToMany(models.Designation, {
         through: models.UserDesignationMapping,
-        foreignKey: "user_id",
+        foreignKey: "userId",
         as: "Designation",
       });
 
       this.belongsToMany(models.Role, {
         through: models.UserRoleMapping,
-        foreignKey: "user_id",
+        foreignKey: "userId",
         as: "Role",
       });
 
       this.belongsToMany(models.Workspace, {
         through: models.UserWorkspaceMapping,
-        foreignKey: "user_id",
+        foreignKey: "userId",
         as: "Workspace",
       });
 
       this.hasMany(models.Task, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         targetKey: "id",
         as: "Task",
       });
