@@ -153,6 +153,21 @@ const watch = async (user, paramsData) => {
   if (!task) {
     throw new Error("Task not found");
   }
+  const checkSprint = await sprint(task.sprintId);
+  if (!checkSprint) {
+    throw new Error("Sprint not found");
+  }
+
+  const loginUser = user.id;
+  const workspaceId = checkSprint.workspaceId;
+
+  const taskCreator = await userInWorkspaceMapping(loginUser, workspaceId);
+  if (!taskCreator) {
+    throw new Error("Access denied");
+  }
+  const checkUser = await models.User.findOne({
+    where: { id: task.userId },
+  });
   task.watch.push(user.email);
   const watchedBy = task.watch;
   await models.Task.update(
@@ -161,6 +176,11 @@ const watch = async (user, paramsData) => {
     },
     { where: { id: paramsData.taskId } }
   );
+
+  const body = `${user.email} added into watch`;
+  const subject = "Task watch";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
   return "you are added into task";
 };
 
