@@ -215,7 +215,7 @@ const taskStatus = async (payload, user, paramsData) => {
   }
   const leadDesignation = await models.Designation.findOne({
     where: {
-      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+      [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
     },
   });
   const sprintId = task.sprintId;
@@ -260,7 +260,7 @@ const approveTask = async (user, paramsData) => {
 
   const leadDesignation = await models.Designation.findOne({
     where: {
-      [Op.and]: [{ designationCode: 103 }, { designationCode: 102 }],
+      [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
     },
   });
   const sprintId = task.sprintId;
