@@ -126,17 +126,6 @@ const loginUser = async (payload) => {
     { userId: user.dataValues.id },
     process.env.SECRET_KEY_ACCESS
   );
-  refreshToken = jwt.sign(
-    { userId: user.dataValues.id },
-    process.env.SECRET_KEY_REFRESH
-  );
-  refreshToken = jwt.sign(
-    { userId: user.dataValues.id },
-    process.env.SECRET_KEY_REFRESH,
-    {
-      expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-    }
-  );
 
   delete user.dataValues.password;
   await redisClient.set(key, refreshToken, 60 * 24);

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const models = require("../models");
+const redisClient = require("../utility/redis");
 const checkAccessToken = async (req, res, next) => {
   try {
     const header = req.headers["authorization"];
