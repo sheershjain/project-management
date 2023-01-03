@@ -55,7 +55,7 @@ const createTask = async (payload, user) => {
   payload.status = "pending";
   const task = await models.Task.create(payload);
 
-  const body = `You have assign task -  ${task.dataValues.task}`;
+  const body = `You have assign task -  ${task.dataValues.task} by ${user.email}`;
   const subject = "Your workspace Task";
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
@@ -331,6 +331,46 @@ const updateTaskComment = async (payload, user, paramsData) => {
   return "comment updated successfully";
 };
 
+const openAllTask = async (user, paramsData) => {
+  const checkSprint = await sprint(paramsData.sprintId);
+  if (!checkSprint) {
+    throw new Error("Sprint not found");
+  }
+  const checkWorkspace = await models.Workspace.findOne({
+    where: { id: checkSprint.workspaceId },
+  });
+  if (!checkWorkspace) {
+    throw new Error("Workspace not found");
+  }
+  const userInWorkspace = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [{ userId: user.id }, { workspaceId: checkSprint.workspaceId }],
+    },
+  });
+  if (!userInWorkspace) {
+    throw new Error("Access denied");
+  }
+
+  const task = await models.Task.restore({
+    where: { sprintId: paramsData.sprintId },
+  });
+  const allSprintTask = await models.Task.findAll({
+    where: { sprintId: paramsData.sprintId },
+  });
+  let userEmail = [];
+  for (let userTask = 0; userTask < allSprintTask.length; userTask++) {
+    const checkUser = await models.User.findOne({
+      where: { id: allSprintTask[userTask].userId },
+    });
+    userEmail.push(checkUser.email);
+  }
+  const body = `Your task has been opend by -  ${user.email}`;
+  const subject = "Task Opened";
+  const recipient = userEmail;
+  console.log(recipient);
+  mailer.sendMail(body, subject, recipient);
+  return "All task opend successfully";
+};
 module.exports = {
   createTask,
   updateTask,
@@ -342,4 +382,5 @@ module.exports = {
   approveTask,
   openTask,
   updateTaskComment,
+  openAllTask,
 };

@@ -98,7 +98,7 @@ router.patch(
 );
 
 router.delete(
-  "/archive/:workspaceId",
+  "/workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
   workspaceCotroller.archiveWorkspace,
@@ -240,6 +240,13 @@ router.patch(
   checkAccessToken,
   taskValidator.updateTaskCommentSchema,
   taskController.updateTaskComment,
+  genericResponse.sendResponse
+);
+
+router.patch(
+  "/open-all-task/:sprintId",
+  checkAccessToken,
+  taskController.openAllTask,
   genericResponse.sendResponse
 );
 

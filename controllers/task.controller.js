@@ -139,6 +139,21 @@ const updateTaskComment = async (req, res, next) => {
   }
 };
 
+const openAllTask = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      sprintId: params.sprintId,
+    };
+    const { user } = req;
+    const data = await taskService.openAllTask(user, paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
 module.exports = {
   createTask,
   updateTask,
@@ -150,4 +165,5 @@ module.exports = {
   approveTask,
   openTask,
   updateTaskComment,
+  openAllTask,
 };
