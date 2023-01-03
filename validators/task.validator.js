@@ -41,4 +41,12 @@ module.exports = {
 
     validateRequest(req, res, next, schema, "body");
   },
+
+  updateTaskCommentSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      comment: Joi.string().min(5),
+    });
+
+    validateRequest(req, res, next, schema, "body");
+  },
 };

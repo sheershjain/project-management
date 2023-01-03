@@ -318,6 +318,19 @@ const openTask = async (user, paramsData) => {
   }
 };
 
+const updateTaskComment = async (payload, user, paramsData) => {
+  const task = await models.Task.findOne({
+    where: {
+      [Op.and]: [{ id: paramsData.taskId }, { userId: user.id }],
+    },
+  });
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  const taskComment = await models.TaskComment.update(payload);
+  return "comment updated successfully";
+};
+
 module.exports = {
   createTask,
   updateTask,
@@ -328,4 +341,5 @@ module.exports = {
   taskStatus,
   approveTask,
   openTask,
+  updateTaskComment,
 };

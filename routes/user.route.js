@@ -235,4 +235,12 @@ router.patch(
   genericResponse.sendResponse
 );
 
+router.patch(
+  "/comment/:taskId",
+  checkAccessToken,
+  taskValidator.updateTaskCommentSchema,
+  taskController.updateTaskComment,
+  genericResponse.sendResponse
+);
+
 module.exports = router;
