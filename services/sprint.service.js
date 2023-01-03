@@ -71,32 +71,38 @@ const updateSprint = async (payload, user, paramsData) => {
 };
 
 const archiveSprint = async (user, paramsData) => {
-  const checkSprint = await models.Sprint.findOne({
-    where: { id: paramsData.sprintId },
-  });
-  if (!checkSprint) {
-    throw new Error("Sprint not found");
-  }
-  const designation = await models.Designation.findOne({
-    where: {
-      [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
-    },
-  });
-  let isLeadWorkspace = await models.UserWorkspaceMapping.findOne({
-    where: {
-      [Op.and]: [
-        { userId: user.id },
-        { workspaceId: checkSprint.dataValues.workspaceId },
-        { designationId: designation.id },
-      ],
-    },
-  });
-
-  if (!isLeadWorkspace) {
-    throw new Error("Access denied");
-  }
   const trans = await sequelize.transaction();
   try {
+    const checkSprint = await models.Sprint.findOne(
+      {
+        where: { id: paramsData.sprintId },
+      },
+      { transaction: trans }
+    );
+    if (!checkSprint) {
+      throw new Error("Sprint not found");
+    }
+    const designation = await models.Designation.findOne({
+      where: {
+        [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
+      },
+    });
+    let isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
+      {
+        where: {
+          [Op.and]: [
+            { userId: user.id },
+            { workspaceId: checkSprint.dataValues.workspaceId },
+            { designationId: designation.id },
+          ],
+        },
+      },
+      { transaction: trans }
+    );
+
+    if (!isLeadWorkspace) {
+      throw new Error("Access denied");
+    }
     const task = await models.Task.destroy(
       {
         where: { sprintId: paramsData.sprintId },
@@ -159,9 +165,9 @@ const openSprint = async (user, paramsData) => {
       },
       { transaction: trans }
     );
-    if (!checkSprint) {
-      throw new Error("sprint not found");
-    }
+    // if (!checkSprint) {
+    //   throw new Error("sprint not found");
+    // }
     const designation = await models.Designation.findOne(
       {
         where: {
@@ -170,9 +176,9 @@ const openSprint = async (user, paramsData) => {
       },
       { transaction: trans }
     );
-    if (!designation) {
-      throw new Error("designation not found");
-    }
+    // if (!designation) {
+    //   throw new Error("designation not found");
+    // }
     const isLeadWorkspace = await models.UserWorkspaceMapping.findOne(
       {
         where: {
@@ -197,7 +203,7 @@ const openSprint = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!findWorkspace) {
-      throw new Error("something went wrong");
+      throw new Error("sprint can not be open");
     }
     await trans.commit();
     return "sprint opened successfully";

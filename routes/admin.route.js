@@ -66,4 +66,13 @@ router.get(
   genericResponse.sendResponse
 );
 
+router.get(
+  "/workspace/:workspaceId",
+  checkAccessToken,
+  verifyAdmin,
+  workspaceCotroller.getSingleworkspace,
+  // workspaceSerializer.getSingleWorkspace,
+  genericResponse.sendResponse
+);
+
 module.exports = router;

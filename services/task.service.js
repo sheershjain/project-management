@@ -309,7 +309,7 @@ const openTask = async (user, paramsData) => {
       { transaction: trans }
     );
     if (!openTask) {
-      throw new Error("Something went wrong");
+      throw new Error("Task not found");
     }
     const findTask = await models.Task.findOne(
       {
@@ -317,9 +317,8 @@ const openTask = async (user, paramsData) => {
       },
       { transaction: trans }
     );
-
     if (!findTask) {
-      throw new Error("Task not found");
+      throw new Error("Something went wrong");
     }
     const findSprint = await models.Sprint.findOne(
       {
@@ -330,12 +329,29 @@ const openTask = async (user, paramsData) => {
     if (!findSprint) {
       throw new Error("Task can not be open");
     }
+    const userInWorkspace = await models.UserWorkspaceMapping.findOne(
+      {
+        where: {
+          [Op.and]: [
+            { userId: user.id },
+            { workspaceId: findSprint.workspaceId },
+          ],
+        },
+      },
+      { transaction: trans }
+    );
+    if (!userInWorkspace) {
+      throw new Error("Access denied");
+    }
     const checkUser = await models.User.findOne(
       {
         where: { id: findTask.userId },
       },
       { transaction: trans }
     );
+    if (!checkUser) {
+      throw new Error("Something went wrong");
+    }
     const body = `Your task (${paramsData.taskId}) has been opend by -  ${user.email}`;
     const subject = "Task Opened";
     const recipient = checkUser.email;
