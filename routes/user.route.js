@@ -2,6 +2,7 @@ const { Router } = require("express");
 const userController = require("../controllers/user.controller");
 const workspaceCotroller = require("../controllers/workspace.controller");
 const sprintController = require("../controllers/sprint.controller");
+const taskController = require("../controllers/task.controller");
 const {
   checkAccessToken,
   checkRefreshToken,
@@ -13,6 +14,8 @@ const workspaceValidator = require("../validators/workspace.validator");
 const workspaceSerializer = require("../serializers/workspace.serializer");
 const sprintValidator = require("../validators/sprint.validator");
 const sprintSerializer = require("../serializers/sprint.seralizer");
+const taskValidator = require("../validators/task.validator");
+const taskSeralizer = require("../serializers/task.seralize");
 const router = Router();
 
 router.post(
@@ -119,7 +122,7 @@ router.get(
 );
 
 router.patch(
-  "/open/:workspaceId",
+  "/open-workspace/:workspaceId",
   checkAccessToken,
   verifyManager,
   workspaceCotroller.openWorkspace,
@@ -146,28 +149,28 @@ router.patch(
 router.post(
   "/task",
   checkAccessToken,
-  validator.taskValidator.createTaskSchema,
-  controllers.Task.createTask,
-  serializer.taskSeralizer.createTask,
+  taskValidator.createTaskSchema,
+  taskController.createTask,
+  taskSeralizer.createTask,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/task/:taskId",
   checkAccessToken,
-  validator.taskValidator.updateTaskSchema,
-  controllers.Task.updateTask,
+  taskValidator.updateTaskSchema,
+  taskController.updateTask,
   genericResponse.sendResponse
 );
 
 router.delete(
-  "/archive/:taskId",
+  "/task/:taskId",
   checkAccessToken,
-  controllers.Task.archiveTask,
+  taskController.archiveTask,
   genericResponse.sendResponse
 );
 router.delete(
-  "/archive/:sprintId",
+  "/sprint/:sprintId",
   checkAccessToken,
   sprintController.archiveSprint,
   genericResponse.sendResponse
@@ -176,38 +179,38 @@ router.delete(
 router.get(
   "/task",
   checkAccessToken,
-  controllers.Task.myTask,
-  serializer.taskSeralizer.getMyTask,
+  taskController.myTask,
+  taskSeralizer.getMyTask,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/watch/:taskId",
   checkAccessToken,
-  controllers.Task.watch,
+  taskController.watch,
   genericResponse.sendResponse
 );
 
 router.post(
   "/comment",
   checkAccessToken,
-  validator.taskValidator.addTaskCommentSchema,
-  controllers.Task.addTaskComment,
-  serializer.taskSeralizer.addTaskComment,
+  taskValidator.addTaskCommentSchema,
+  taskController.addTaskComment,
+  taskSeralizer.addTaskComment,
   genericResponse.sendResponse
 );
 router.patch(
   "/status/:taskId",
   checkAccessToken,
-  validator.taskValidator.taskStatus,
-  controllers.Task.taskStatus,
+  taskValidator.taskStatus,
+  taskController.taskStatus,
   genericResponse.sendResponse
 );
 
 router.patch(
   "/approve/:taskId",
   checkAccessToken,
-  controllers.Task.approveTask,
+  taskController.approveTask,
   genericResponse.sendResponse
 );
 router.get(
@@ -219,16 +222,16 @@ router.get(
 );
 
 router.patch(
-  "/open/:sprintId",
+  "/open-sprint/:sprintId",
   checkAccessToken,
   sprintController.openSprint,
   genericResponse.sendResponse
 );
 
 router.patch(
-  "/open/:taskId",
+  "/open-task/:taskId",
   checkAccessToken,
-  controllers.Task.openTask,
+  taskController.openTask,
   genericResponse.sendResponse
 );
 

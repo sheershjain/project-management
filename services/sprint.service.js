@@ -117,10 +117,7 @@ const archiveSprint = async (user, paramsData) => {
 const mySprint = async (user, paramsData) => {
   const checkWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
-      [Op.and]: [
-        { userId: user.id },
-        { workspaceId: paramsData.workspaceId },
-      ],
+      [Op.and]: [{ userId: user.id }, { workspaceId: paramsData.workspaceId }],
     },
   });
 
@@ -171,6 +168,16 @@ const openSprint = async (user, paramsData) => {
 
     if (!isLeadWorkspace) {
       throw new Error("Access denied");
+    }
+
+    const findWorkspace = await models.Workspace.findOne(
+      {
+        where: { id: isLeadWorkspace.workspaceId },
+      },
+      { transaction: trans }
+    );
+    if (!findWorkspace) {
+      throw new Error("Workspace not found");
     }
 
     await trans.commit();

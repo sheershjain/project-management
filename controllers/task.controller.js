@@ -1,4 +1,4 @@
-const { commonErrorHandler } = require("../helper/error-handler.helper");
+const { commonErrorHandler } = require("../helpers/error-handler.helper");
 const taskService = require("../services/task.service");
 
 const createTask = async (req, res, next) => {

@@ -1,7 +1,7 @@
 const models = require("../models");
 const { sequelize } = require("../models");
 const { Op, where } = require("sequelize");
-const mailer = require("../helper/mail.helper");
+const mailer = require("../helpers/mail.helper");
 const moment = require("moment");
 const user = require("../models/user");
 
@@ -15,7 +15,7 @@ const sprint = async (sprintId) => {
 const userInWorkspaceMapping = async (userId, workspaceId) => {
   const userWorkspaceMapping = await models.UserWorkspaceMapping.findOne({
     where: {
-      [Op.and]: [{ user_id: userId }, { workspace_id: workspaceId }],
+      [Op.and]: [{ userId: userId }, { workspaceId: workspaceId }],
     },
   });
   return userWorkspaceMapping;
@@ -33,7 +33,7 @@ const createTask = async (payload, user) => {
   });
 
   const loginUser = user.id;
-  const workspaceId = checkSprint.workspace_id;
+  const workspaceId = checkSprint.workspaceId;
 
   const taskCreator = await userInWorkspaceMapping(loginUser, workspaceId);
   if (!taskCreator) {
@@ -84,7 +84,7 @@ const updateTask = async (payload, user, paramsData) => {
     throw new Error("Invalid deadline");
   }
   const loginUser = user.id;
-  const workspaceId = checkSprint.workspace_id;
+  const workspaceId = checkSprint.workspaceId;
 
   const taskUpdatedBy = await userInWorkspaceMapping(loginUser, workspaceId);
   if (!taskUpdatedBy) {
@@ -117,9 +117,11 @@ const archiveTask = async (user, paramsData) => {
 
   const sprintId = checkTask.sprintId;
   const checkSprint = await sprint(sprintId);
-
+  if (!checkSprint) {
+    throw new Error("Task sprint not found");
+  }
   const loginUser = user.id;
-  const workspaceId = checkSprint.workspace_id;
+  const workspaceId = checkSprint.workspaceId;
 
   const taskDeletedBy = await userInWorkspaceMapping(loginUser, workspaceId);
   if (!taskDeletedBy) {
@@ -189,23 +191,26 @@ const taskStatus = async (payload, user, paramsData) => {
   });
   const sprintId = task.sprintId;
   const checkSprint = await sprint(sprintId);
+  if (!checkSprint) {
+    throw new Error("Task sprint not found");
+  }
   const workspaceLead = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { workspace_id: checkSprint.workspaceId },
-        { designation_id: leadDesignation.id },
+        { workspaceId: checkSprint.workspaceId },
+        { designationId: leadDesignation.id },
       ],
     },
   });
   const leadInfo = await models.User.findOne({
-    where: { id: workspaceLead.user_id },
+    where: { id: workspaceLead.userId },
   });
 
   const status = await models.Task.update(payload, {
     where: { id: paramsData.taskId },
   });
   if (payload.status == "done") {
-    const body = `Please approve this task -  ${paramsData.taskId}`;
+    const body = `Please approve this task -  ${paramsData.taskId} task deadline (${task.deadline})`;
     const subject = "Approve Task ";
     const recipient = leadInfo.email;
     mailer.sendMail(body, subject, recipient);
@@ -232,9 +237,9 @@ const approveTask = async (user, paramsData) => {
   const workspaceLead = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [
-        { user_id: user.id },
-        { workspace_id: checkSprint.workspaceId },
-        { designation_id: leadDesignation.id },
+        { userId: user.id },
+        { workspaceId: checkSprint.workspaceId },
+        { designationId: leadDesignation.id },
       ],
     },
   });
@@ -264,34 +269,53 @@ const approveTask = async (user, paramsData) => {
 };
 
 const openTask = async (user, paramsData) => {
-  const findTask = async (taskId) => {
-    const findTask = await models.Task.findOne({
-      where: { id: taskId },
-    });
-    return findTask;
-  };
+  const trans = await sequelize.transaction();
+  try {
+    const openTask = await models.Task.restore(
+      {
+        where: { id: paramsData.taskId },
+      },
+      { transaction: trans }
+    );
+    if (!openTask) {
+      throw new Error("Something went wrong");
+    }
+    const findTask = await models.Task.findOne(
+      {
+        where: { id: paramsData.taskId },
+      },
+      { transaction: trans }
+    );
 
-  const isTask = await findTask(paramsData.taskId);
-  if (isTask) {
-    throw new Error("Task is already open");
+    if (!findTask) {
+      throw new Error("Task not found");
+    }
+    const findSprint = await models.Sprint.findOne(
+      {
+        where: { id: findTask.sprintId },
+      },
+      { transaction: trans }
+    );
+    if (!findSprint) {
+      throw new Error("Task can not be open");
+    }
+    const checkUser = await models.User.findOne(
+      {
+        where: { id: findTask.userId },
+      },
+      { transaction: trans }
+    );
+    const body = `Your task (${paramsData.taskId}) has been opend by -  ${user.email}`;
+    const subject = "Task Opened";
+    const recipient = checkUser.email;
+    mailer.sendMail(body, subject, recipient);
+    await trans.commit();
+    return "task opened successfully";
+  } catch (error) {
+    await trans.rollback();
+    console.log(error.message);
+    return { data: null, error: error };
   }
-
-  const openTask = await models.Task.restore({
-    where: { id: paramsData.taskId },
-  });
-
-  if (!openTask) {
-    throw new Error("Task not found");
-  }
-  const checkTask = await findTask(paramsData.taskId);
-  const checkUser = await models.User.findOne({
-    where: { id: checkTask.userId },
-  });
-  const body = `Your task (${paramsData.taskId}) has been opend by -  ${user.email}`;
-  const subject = "Task Opened";
-  const recipient = checkUser.email;
-  mailer.sendMail(body, subject, recipient);
-  return "task opened successfully";
 };
 
 module.exports = {
