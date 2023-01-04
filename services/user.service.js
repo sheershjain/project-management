@@ -87,15 +87,12 @@ const createUser = async (payload) => {
     return payload;
   } catch (error) {
     await trans.rollback();
-    console.log(error.message);
     return { data: null, error: error };
   }
 };
 
 const loginUser = async (payload) => {
   const { email, password } = payload;
-
-  console.log(payload);
 
   const user = await models.User.findOne({
     where: {

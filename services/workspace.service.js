@@ -36,7 +36,6 @@ const createWorkspace = async (payload, user) => {
     return workspace;
   } catch (error) {
     await trans.rollback();
-    console.log(error.message);
     return { data: null, error: error.message };
   }
 };
@@ -267,7 +266,6 @@ const archiveWorkspace = async (paramsData) => {
     return "workspace deleted successfully";
   } catch (error) {
     await trans.rollback();
-    console.log(error.message);
     return { data: null, error: error.message };
   }
 };
