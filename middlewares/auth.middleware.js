@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const models = require("../models");
+const redisClient = require("../utility/redis");
 const checkAccessToken = async (req, res, next) => {
   try {
     const header = req.headers["authorization"];
@@ -25,7 +26,7 @@ const checkAccessToken = async (req, res, next) => {
       ],
     });
     if (!user) {
-      throw new Error("User Not found");
+      throw new Error("User Not found please login");
     }
     req.user = user;
     next();

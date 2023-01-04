@@ -36,8 +36,7 @@ const createWorkspace = async (payload, user) => {
     return workspace;
   } catch (error) {
     await trans.rollback();
-    console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 
@@ -106,18 +105,23 @@ const getAllWorkSpace = async (query) => {
     },
     include: [
       {
-        model: models.Designation,
-        as: "Designation",
-        attributes: ["designationTitle"],
+        model: models.Workspace,
+        as: "Workspace",
+        attributes: ["name"],
       },
       {
         model: models.User,
         as: "User",
         attributes: ["email"],
       },
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
     ],
     limit: limit,
-    offset: page * 3,
+    offset: page * limit,
   });
   return workspace;
 };
@@ -213,15 +217,18 @@ const updateUserDesignationInWorkspace = async (payload, user, paramsData) => {
 };
 
 const archiveWorkspace = async (paramsData) => {
-  const checkWorkspace = await models.Workspace.findOne({
-    where: { id: paramsData.workspaceId },
-  });
-
-  if (!checkWorkspace) {
-    throw new Error("Workspace not found");
-  }
   const trans = await sequelize.transaction();
   try {
+    const checkWorkspace = await models.Workspace.findOne(
+      {
+        where: { id: paramsData.workspaceId },
+      },
+      { transaction: trans }
+    );
+
+    if (!checkWorkspace) {
+      throw new Error("Workspace not found");
+    }
     const sprint = await models.Sprint.findAll(
       {
         where: { workspaceId: paramsData.workspaceId },
@@ -259,8 +266,7 @@ const archiveWorkspace = async (paramsData) => {
     return "workspace deleted successfully";
   } catch (error) {
     await trans.rollback();
-    console.log(error.message);
-    return { data: null, error: error };
+    return { data: null, error: error.message };
   }
 };
 
@@ -335,6 +341,36 @@ const openWorkspace = async (paramsData) => {
   return "workspace open successfully";
 };
 
+const getSingleworkspace = async (paramsData) => {
+  const workspace = await models.UserWorkspaceMapping.findAll({
+    where: { workspaceId: paramsData.workspaceId },
+    attributes: {
+      exclude: ["deleted_at", "created_at", "updated_at"],
+    },
+    include: [
+      {
+        model: models.Workspace,
+        as: "Workspace",
+        attributes: ["name"],
+      },
+      {
+        model: models.User,
+        as: "User",
+        attributes: ["email"],
+      },
+      {
+        model: models.Designation,
+        as: "Designation",
+        attributes: ["designationTitle"],
+      },
+    ],
+  });
+  if (!workspace) {
+    throw new Error("Workspace not found");
+  }
+  return workspace;
+};
+
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -345,4 +381,5 @@ module.exports = {
   removeUserWorkspace,
   myWorkspace,
   openWorkspace,
+  getSingleworkspace,
 };

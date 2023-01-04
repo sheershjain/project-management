@@ -86,8 +86,10 @@ const archiveWorkspace = async (req, res, next) => {
     const paramsData = {
       workspaceId: params.workspaceId,
     };
-
     const data = await WorkspaceService.archiveWorkspace(paramsData);
+    if (data.error) {
+      throw new Error(data.error);
+    }
     res.data = data;
     next();
   } catch (error) {
@@ -122,15 +124,30 @@ const openWorkspace = async (req, res, next) => {
     const paramsData = {
       workspaceId: params.workspaceId,
     };
-
     const data = await WorkspaceService.openWorkspace(paramsData);
+    if (data.error) {
+      throw new Error(data.error);
+    }
     res.data = data;
     next();
   } catch (error) {
     commonErrorHandler(req, res, error.message, 400, error);
   }
 };
+const getSingleworkspace = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
 
+    const data = await WorkspaceService.getSingleworkspace(paramsData);
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
 module.exports = {
   createWorkspace,
   addUserInWorkspace,
@@ -141,4 +158,5 @@ module.exports = {
   removeUserWorkspace,
   myWorkspace,
   openWorkspace,
+  getSingleworkspace,
 };

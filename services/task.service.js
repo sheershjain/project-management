@@ -132,11 +132,11 @@ const archiveTask = async (user, paramsData) => {
     where: { id: paramsData.taskId },
   });
 
-  const body = `Your task has been deleted by -  ${user.email}`;
-  const subject = "Task Deleted";
+  const body = `Your task ${checkTask.task} has been archive by -  ${user.email}`;
+  const subject = "Task archive";
   const recipient = checkUser.email;
   mailer.sendMail(body, subject, recipient);
-  return "task deleted successfully";
+  return "task archive successfully";
 };
 
 const myTask = async (user) => {
@@ -214,7 +214,9 @@ const taskStatus = async (payload, user, paramsData) => {
     throw new Error("You can not change task status");
   }
   const leadDesignation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   const sprintId = task.sprintId;
   const checkSprint = await sprint(sprintId);
@@ -257,7 +259,9 @@ const approveTask = async (user, paramsData) => {
   });
 
   const leadDesignation = await models.Designation.findOne({
-    where: { designationCode: 103 },
+    where: {
+      [Op.or]: [{ designationCode: 103 }, { designationCode: 102 }],
+    },
   });
   const sprintId = task.sprintId;
   const checkSprint = await sprint(sprintId);
@@ -296,53 +300,49 @@ const approveTask = async (user, paramsData) => {
 };
 
 const openTask = async (user, paramsData) => {
-  const trans = await sequelize.transaction();
-  try {
-    const openTask = await models.Task.restore(
-      {
-        where: { id: paramsData.taskId },
-      },
-      { transaction: trans }
-    );
-    if (!openTask) {
-      throw new Error("Something went wrong");
-    }
-    const findTask = await models.Task.findOne(
-      {
-        where: { id: paramsData.taskId },
-      },
-      { transaction: trans }
-    );
-
-    if (!findTask) {
-      throw new Error("Task not found");
-    }
-    const findSprint = await models.Sprint.findOne(
-      {
-        where: { id: findTask.sprintId },
-      },
-      { transaction: trans }
-    );
-    if (!findSprint) {
-      throw new Error("Task can not be open");
-    }
-    const checkUser = await models.User.findOne(
-      {
-        where: { id: findTask.userId },
-      },
-      { transaction: trans }
-    );
-    const body = `Your task (${paramsData.taskId}) has been opend by -  ${user.email}`;
-    const subject = "Task Opened";
-    const recipient = checkUser.email;
-    mailer.sendMail(body, subject, recipient);
-    await trans.commit();
-    return "task opened successfully";
-  } catch (error) {
-    await trans.rollback();
-    console.log(error.message);
-    return { data: null, error: error };
+  const openTask = await models.Task.restore({
+    where: {
+      id: paramsData.taskId,
+    },
+  });
+  if (!openTask) {
+    throw new Error("Task not found");
   }
+  const findTask = await models.Task.findOne({
+    where: { id: paramsData.taskId },
+  });
+  const findSprint = await models.Sprint.findOne({
+    where: { id: findTask.sprintId },
+  });
+  if (!findSprint) {
+    const archiveTask = await models.Task.destroy({
+      where: {
+        id: paramsData.taskId,
+      },
+    });
+    throw new Error("Task can not be open");
+  }
+  const userInWorkspace = await models.UserWorkspaceMapping.findOne({
+    where: {
+      [Op.and]: [{ userId: user.id }, { workspaceId: findSprint.workspaceId }],
+    },
+  });
+  if (!userInWorkspace) {
+    const archiveTask = await models.Task.destroy({
+      where: {
+        id: paramsData.taskId,
+      },
+    });
+    throw new Error("Access denied");
+  }
+  const checkUser = await models.User.findOne({
+    where: { id: findTask.userId },
+  });
+  const body = `Your task ${findTask.task} has been opend by -  ${user.email}`;
+  const subject = "Task Opened";
+  const recipient = checkUser.email;
+  mailer.sendMail(body, subject, recipient);
+  return "task opened successfully";
 };
 
 const updateTaskComment = async (payload, user, paramsData) => {
@@ -366,9 +366,6 @@ const openAllTask = async (user, paramsData) => {
   const checkWorkspace = await models.Workspace.findOne({
     where: { id: checkSprint.workspaceId },
   });
-  if (!checkWorkspace) {
-    throw new Error("Workspace not found");
-  }
   const userInWorkspace = await models.UserWorkspaceMapping.findOne({
     where: {
       [Op.and]: [{ userId: user.id }, { workspaceId: checkSprint.workspaceId }],
@@ -391,10 +388,9 @@ const openAllTask = async (user, paramsData) => {
     });
     userEmail.push(checkUser.email);
   }
-  const body = `Your task has been opend by -  ${user.email}`;
+  const body = `All task has been opend by -  ${user.email} in sprint ${checkSprint.name}`;
   const subject = "Task Opened";
   const recipient = userEmail;
-  console.log(recipient);
   mailer.sendMail(body, subject, recipient);
   return "All task opend successfully";
 };

@@ -49,4 +49,12 @@ module.exports = {
     });
     validateRequest(req, res, next, schema, "body");
   },
+
+  limitPageSchema: async (req, res, next) => {
+    const schema = Joi.object({
+      page: Joi.number().positive().allow(0).required(),
+      limit: Joi.number().positive().required(),
+    });
+    validateRequest(req, res, next, schema, "query");
+  },
 };

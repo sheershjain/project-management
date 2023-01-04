@@ -27,6 +27,7 @@ router.get(
   "/users",
   checkAccessToken,
   verifyAdmin,
+  userValidator.limitPageSchema,
   userController.getAllUser,
   userSerializer.getAllUser,
   genericResponse.sendResponse
@@ -63,6 +64,15 @@ router.get(
   verifyAdmin,
   workspaceCotroller.getAllWorkSpace,
   workspaceSerializer.getAllWorkspace,
+  genericResponse.sendResponse
+);
+
+router.get(
+  "/workspace/:workspaceId",
+  checkAccessToken,
+  verifyAdmin,
+  workspaceCotroller.getSingleworkspace,
+  workspaceSerializer.getSingleWorkspace,
   genericResponse.sendResponse
 );
 

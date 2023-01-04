@@ -2,12 +2,13 @@ const getAllWorkspace = async (req, res, next) => {
   const data = res.data || null;
   const serializedData = [];
   data.forEach((item) => {
-    const user = {
+    const workspace = {
       workspaceId: item.dataValues.workspaceId,
+      workspaceName: item.Workspace.name,
       email: item.User.email,
       designationTitle: item.Designation.designationTitle,
     };
-    serializedData.push(user);
+    serializedData.push(workspace);
   });
   res.data = serializedData;
   next();
@@ -34,9 +35,24 @@ const addUserInWorkspace = async (req, res, next) => {
   res.data = response;
   next();
 };
-
+const getSingleWorkspace = async (req, res, next) => {
+  const data = res.data || null;
+  const serializedData = [];
+  data.forEach((item) => {
+    const workspace = {
+      workspaceId: item.dataValues.workspaceId,
+      workspaceName: item.Workspace.name,
+      email: item.User.email,
+      designationTitle: item.Designation.designationTitle,
+    };
+    serializedData.push(workspace);
+  });
+  res.data = serializedData;
+  next();
+};
 module.exports = {
   getAllWorkspace,
   createWorkspace,
   addUserInWorkspace,
+  getSingleWorkspace,
 };

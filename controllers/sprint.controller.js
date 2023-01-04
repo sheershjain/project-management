@@ -35,7 +35,10 @@ const archiveSprint = async (req, res, next) => {
     };
     const { user } = req;
     const data = await sprintService.archiveSprint(user, paramsData);
-    res.data = data;
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    res.data = data.data;
     next();
   } catch (error) {
     commonErrorHandler(req, res, error.message, 400, error);
@@ -64,6 +67,27 @@ const openSprint = async (req, res, next) => {
     };
     const { user } = req;
     const data = await sprintService.openSprint(user, paramsData);
+     if (data.error) {
+       throw new Error(data.error);
+     }
+    res.data = data;
+    next();
+  } catch (error) {
+    commonErrorHandler(req, res, error.message, 400, error);
+  }
+};
+
+const openAllSprint = async (req, res, next) => {
+  try {
+    const { params } = req;
+    const paramsData = {
+      workspaceId: params.workspaceId,
+    };
+    const { user } = req;
+    const data = await sprintService.openAllSprint(user, paramsData);
+     if (data.error) {
+       throw new Error(data.error);
+     }
     res.data = data;
     next();
   } catch (error) {
@@ -77,4 +101,5 @@ module.exports = {
   archiveSprint,
   mySprint,
   openSprint,
+  openAllSprint,
 };

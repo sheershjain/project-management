@@ -117,6 +117,9 @@ const openTask = async (req, res, next) => {
     };
     const { user } = req;
     const data = await taskService.openTask(user, paramsData);
+    if (data.error) {
+      throw new Error(data.error);
+    }
     res.data = data;
     next();
   } catch (error) {
