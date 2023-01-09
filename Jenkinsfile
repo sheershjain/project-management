@@ -36,19 +36,18 @@ pipeline {
 
             } 
         }
-        stage('Deploy push') { 
-            steps { 
-                script { 
-                    docker.withRegistry( 'https://registry.hub.docker.com', 'f6dbd8af-8a0f-40ee-932d-181fd4e16047' ) { 
-                        dockerImage.push() 
-                    }
-                } 
+        stage('Push image to dockerhub') {
+            steps {
+                withCredentials([string(credentialsId: 'f6dbd8af-8a0f-40ee-932d-181fd4e16047', variable: 'DOCKER_HUB_PASS')]) {
+                    sh "docker login -u sheersh -p $DOCKER_HUB_PASS"
+                }
+                slackSend message: "Pushed image -> sheersh/arvind:${tag} to Docker Hub"
+				sh "docker push sheersh/arvind:${tag}"
                 sh "docker rmi -f sheersh/arvind:${tag}"
-                mail bcc: '', body: 'New Build image is pushed to Docker HUb', cc: 'harshit@gkmit.co', from: '', replyTo: '', subject: 'Image pushed successful', to: 'arvind@gkmit.co'
+                mail bcc: '', body: 'New Build image is pushed to Docker HUb', cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Image pushed successful', to: 'divyanshi@gkmit.co'
                 sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Image pushed to Docker HUB"'
-
             }
-        } 
+        }
 
         stage('Deploy webapp in DEV environment') {
             steps {
@@ -71,9 +70,9 @@ pipeline {
                 fi
                 '''
                 
-                slackSend message: "Backend deployed in Dev Environment Successfully at http://13.233.21.134/ with image sheersh/arvind:${tag} "
-                mail bcc: '', body: "Backend deployed in Dev Environment Successfully at http://13.233.21.134/ with image sheersh/arvind:${tag}", cc: 'harshit@gkmit.co', from: '', replyTo: '', subject: 'Deploy in DEV', to: 'arvind@gkmit.co'
-                sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Backend deployed in Dev Environment Successfully at http://13.233.21.134/ with image sheersh/arvind:${tag}"'
+                slackSend message: "Backend deployed in Dev Environment Successfully at http://13.233.21.134:3010/ with image sheersh/arvind:${tag} "
+                mail bcc: '', body: "Backend deployed in Dev Environment Successfully at http://13.233.21.134:3010/ with image sheersh/arvind:${tag}", cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Deploy in DEV', to: 'arvind@gkmit.co'
+                sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Backend deployed in Dev Environment Successfully at http://13.233.21.134:3010/ with image sheersh/arvind:${tag}"'
 				sh "docker rmi -f sheersh/arvind:${tag}"
             }
         }   
