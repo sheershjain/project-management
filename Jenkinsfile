@@ -30,7 +30,6 @@ pipeline {
         //         slackSend message: "Build Completed, Image name -> sheersh/arvind:${tag}"
 		// 		mail bcc: '', body: "Build is completed. Image name -> sheersh/arvind:${tag}", cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Build successful', to: 'arvind@gkmit.co'
         //         sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Build Successfull. Image name -> sheersh/arvind:${tag}"'
-
         //     } 
         // }
         stage('Created Artifact & Build Image') {
