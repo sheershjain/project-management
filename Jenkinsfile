@@ -21,7 +21,7 @@ pipeline {
         stage('Building our image') { 
             steps { 
                 script { 
-                    dockerImage = docker.build registry + ":$${tag}" 
+                    dockerImage = docker.build registry + ":${tag}" 
                 }
                 slackSend message: "Build Completed, Image name -> sheersh/arvind:${tag}"
 				mail bcc: '', body: "Build is completed. Image name -> sheersh/arvind:${tag}", cc: 'harshit@gkmit.co', from: '', replyTo: '', subject: 'Build successful', to: 'arvind@gkmit.co'
