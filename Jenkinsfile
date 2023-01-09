@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo "PULL CODE FROM GITHUB"
                 cleanWs()
-                git branch: 'sheersh', url: 'https://github.com/sheershjain/project-management.git'
+                checkout([$class: 'GitSCM', branches: [[name: '*/sheersh']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sheershjain/project-management.git']]])
             }
         }
 
