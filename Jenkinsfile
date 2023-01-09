@@ -22,16 +22,31 @@ pipeline {
             }
         }
 
-        stage('Building our image') { 
-            steps { 
-                script { 
-                    dockerImage = docker.build registry + ":${tag}" 
-                }
+        // stage('Building our image') { 
+        //     steps { 
+        //         script { 
+        //             dockerImage = docker.build registry + ":${tag}" 
+        //         }
+        //         slackSend message: "Build Completed, Image name -> sheersh/arvind:${tag}"
+		// 		mail bcc: '', body: "Build is completed. Image name -> sheersh/arvind:${tag}", cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Build successful', to: 'arvind@gkmit.co'
+        //         sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Build Successfull. Image name -> sheersh/arvind:${tag}"'
+
+        //     } 
+        // }
+        stage('Created Artifact & Build Image') {
+            steps {
+                slackSend message: "Build Started ${tag}"
+                sh '''
+				docker build -t sheersh/arvind:${tag} .
+                if [ $(docker images -f "dangling=true" -q) != "" ];
+                    then
+                        docker rmi $(docker images -f "dangling=true" -q)
+                fi
+				'''
                 slackSend message: "Build Completed, Image name -> sheersh/arvind:${tag}"
 				mail bcc: '', body: "Build is completed. Image name -> sheersh/arvind:${tag}", cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Build successful', to: 'arvind@gkmit.co'
                 sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Build Successfull. Image name -> sheersh/arvind:${tag}"'
-
-            } 
+            }
         }
         stage('Push image to dockerhub') {
             steps {
@@ -41,7 +56,7 @@ pipeline {
                 slackSend message: "Pushed image -> sheersh/arvind:${tag} to Docker Hub"
 				sh "docker push sheersh/arvind:${tag}"
                 sh "docker rmi -f sheersh/arvind:${tag}"
-                mail bcc: '', body: 'New Build image is pushed to Docker HUb', cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Image pushed successful', to: 'divyanshi@gkmit.co'
+                mail bcc: '', body: 'New Build image is pushed to Docker HUb', cc: 'riya@gkmit.co', from: '', replyTo: '', subject: 'Image pushed successful', to: 'arvind@gkmit.co'
                 sh 'curl -s -X POST https://api.telegram.org/bot5957608414:AAFRgQCY6rjbOUdsfiNgtQ03-euDDgBevQk/sendMessage -d chat_id=-1001461072821 -d parse_mode="HTML" -d text="Image pushed to Docker HUB"'
             }
         }
