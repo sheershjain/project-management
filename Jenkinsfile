@@ -5,10 +5,7 @@ pipeline {
     parameters {
         string(name: 'tag', defaultValue: "${env.BUILD_NUMBER}", description: "Here we define the version or tag for our new image")
     }
-    environment { 
-        registry = "sheersh/arvind" 
-        registryCredential = 'f6dbd8af-8a0f-40ee-932d-181fd4e16047' 
-    }
+
     stages {
         stage('SCM') {
             steps {
